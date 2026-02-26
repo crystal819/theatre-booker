@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!--Login page-->
+<div id="loginPage">
+    <h2 class="d-flex justify-content-center align-items-center">Theatre booking</h2>
+    <section style="height: 150px;"></section>
+    <div class="row">
+        <div class="col-md-5 d-flex justify-content-center align-items-center">
+            <div class="column">
+                <div class="row-md-2">
+                    <h3>Login to get started</h3>
+                </div>
+                <div class="row-md-3 mt-4">
+                    <label>Username</label>
+                    <input>
+                </div>
+                <div class="row-md-3 mt-2">
+                    <label>Password</label>
+                    <input>
+                </div>
+                <div class="row-md-2 mt-4">
+                    Or
+                </div>
+                <div class="row-md-2 mt-4">
+                    <button class="btn btn-outline-primary">Create Account</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+            <h4>Or alternatively</h4>
+        </div>
+        <div class="col-md-5 d-flex justify-content-center align-items-center">
+            <button id="viewPerformancesBtn" class="btn btn-outline-primary mt-3">View currently avaiable performances</button>
+        </div>
+    </div>
+</div>
+
+<!--View currently active performances-->
+<div id="viewPerformancesPage" class="d-none">
+    <h2 class="d-flex justify-content-center align-items-center">Performances available</h2>
+    <section style="height: 150px;"></section>
+    <div class="row">
+        <div class="col-md-3">
+            <table class="table table-bordered table-striped mt-3 text-center">
+                <thead style="position: sticky; top: 0;">
+                    <tr>
+                        <th>Event</th>
+                        <th>Seats Available</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="performanceTableBody"></tbody>
+            </table>
+        </div>
+        <div class="col-md-9">
+            {% for i in range(9) %}
+                <div class="row">
+                        <div class="col-md-3">
+                            {% for k in range(5) %}
+                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                            {% endfor %}
+                            <section style="width: 50px;"></section>
+                        </div>
+                        <div class="col-md-6">
+                            {% for k in range(10) %}
+                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <section style="width: 50px;"></section>
+                            {% for k in range(5) %}
+                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                            {% endfor %}
+                        </div>
+                </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-12">
+                    <section style="width: 50px;"></section>
+                    {% for k in range(20) %}
+                        <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                    {% endfor %}
+                    <section style="width: 50px;"></section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("viewPerformancesBtn").addEventListener("click", () => {
+    document.getElementById("loginPage").classList.add("d-none")
+    document.getElementById("viewPerformancesPage").classList.remove("d-none")
+    fetch("/performance-data", { /* this sends the requested data to python for sql processing */
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({})
+    })
+    .then (res => res.json())
+    .then(data => {
+        for (let i=0; i < data.length; i++) {
+            let row = document.getElementById("performanceTableBody").insertRow()
+            row.dataset.description = data[i][j] //embedd event description in the row
+
+            for (let j=0; j < 3; j++) {
+                row.insertCell(data[i][j]) //dynamically add the cells to the table list
+            }
+        }
+    })
+})
+
+
+
+//workout what the width of the chairs is or put their height to auto
+
+</script>
+
+{% endblock %}

@@ -53,38 +53,36 @@
                 <tbody id="performanceTableBody"></tbody>
             </table>
         </div>
-        <div class="col-md-9">
-            {% for i in range(9) %}
+
+        <!-- seating layout-->
+        <div id="seatingLayout" class="col-md-9" style="height: 360px; width: 602px; background-color: rgb(219, 218, 218); border: 1px solid rgb(125, 125, 125); border-radius: 5px;">
+            <div class="row">
+                <section style="width: 50px;"></section>
+                {% for k in range(20) %} <!-- top row of seats-->
+                    <button id="seat1{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
+                {% endfor %}
+                <section style="width: 50px;"></section>
+            </div>
+            {% for i in range(9) %} <!-- rest of the seats-->
                 <div class="row">
-                        <div class="col-md-3">
                             {% for k in range(5) %}
-                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                                <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
                             <section style="width: 50px;"></section>
-                        </div>
-                        <div class="col-md-6">
                             {% for k in range(10) %}
-                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                                <button id="seat{{ 9-i }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
-                        </div>
-                        <div class="col-md-3">
                             <section style="width: 50px;"></section>
                             {% for k in range(5) %}
-                                <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
+                                <button id="seat{{ 9-i }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
-                        </div>
                 </div>
             {% endfor %}
-            <div class="row">
-                <div class="col-md-12">
-                    <section style="width: 50px;"></section>
-                    {% for k in range(20) %}
-                        <button style="height: 25px; width: 40px;"><img src="{{ url_for('static', filename='img/chair_red.png') }}" style="height: 25px; width: 40px;"></button>
-                    {% endfor %}
-                    <section style="width: 50px;"></section>
-                </div>
-            </div>
+            <section style="height: 30px;"></section>
+            <nav class="d-flex align-items-center justify-content-center"><div style="height: 30px; width: 360px; background-color: grey; border: 2px solid black;" class="d-flex align-items-center justify-content-center">Screen</div></nav>
         </div>
+
+
     </div>
 </div>
 
@@ -110,9 +108,27 @@ document.getElementById("viewPerformancesBtn").addEventListener("click", () => {
     })
 })
 
+//detects what seat (button or img) was clicked on only within the seatingLayout <div>
+document.getElementById("seatingLayout").addEventListener("click", (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        if (event.target.classList.contains('selected')) {
+            event.target.classList.remove('selected')
+            event.target.querySelector('img').src = 'static/img/chair_green.png'
+        } else {
+            event.target.classList.add('selected')
+            event.target.querySelector('img').src = 'static/img/chair_orange.png'
+        }
+    } else if (event.target.tagName === 'IMG') {
+        if (event.target.closest('button').classList.contains('selected')) {
+            event.target.closest('button').classList.remove('selected')
+            event.target.src = 'static/img/chair_green.png'
+        } else {
+            event.target.closest('button').classList.add('selected')
+            event.target.closest('img').src = 'static/img/chair_orange.png'
+        }
+    }
+})
 
-
-//workout what the width of the chairs is or put their height to auto
 
 </script>
 

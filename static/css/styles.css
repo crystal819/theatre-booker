@@ -1,5 +1,10 @@
+.seat {
+    background-color: rgb(219, 218, 218);
+}
+.seat:hover {
+    background-color: rgb(199, 189, 189);
+}
 
-
-.x {
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+.seat.selected {
+    
 }

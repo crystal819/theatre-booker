@@ -59,22 +59,22 @@
             <div class="row">
                 <section style="width: 50px;"></section>
                 {% for k in range(20) %} <!-- top row of seats-->
-                    <button id="seat1{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
+                    <button id="seat1{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
                 {% endfor %}
                 <section style="width: 50px;"></section>
             </div>
             {% for i in range(9) %} <!-- rest of the seats-->
                 <div class="row">
                             {% for k in range(5) %}
-                                <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
+                                <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
                             <section style="width: 50px;"></section>
                             {% for k in range(10) %}
-                                <button id="seat{{ 9-i }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
+                                <button id="seat{{ 9-i }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
                             <section style="width: 50px;"></section>
                             {% for k in range(5) %}
-                                <button id="seat{{ 9-i }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_green.png') }}" style="height: 25px; width: auto;"></button>
+                                <button id="seat{{ 9-i }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
                             {% endfor %}
                 </div>
             {% endfor %}
@@ -113,18 +113,18 @@ document.getElementById("seatingLayout").addEventListener("click", (event) => {
     if (event.target.tagName === 'BUTTON') {
         if (event.target.classList.contains('selected')) {
             event.target.classList.remove('selected')
-            event.target.querySelector('img').src = 'static/img/chair_green.png'
+            event.target.querySelector('img').src = 'static/img/chair_free.png'
         } else {
             event.target.classList.add('selected')
-            event.target.querySelector('img').src = 'static/img/chair_orange.png'
+            event.target.querySelector('img').src = 'static/img/chair_selected.png'
         }
     } else if (event.target.tagName === 'IMG') {
         if (event.target.closest('button').classList.contains('selected')) {
             event.target.closest('button').classList.remove('selected')
-            event.target.src = 'static/img/chair_green.png'
+            event.target.src = 'static/img/chair_free.png'
         } else {
             event.target.closest('button').classList.add('selected')
-            event.target.closest('img').src = 'static/img/chair_orange.png'
+            event.target.closest('img').src = 'static/img/chair_selected.png'
         }
     }
 })

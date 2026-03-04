@@ -1,10 +1,62 @@
+/* ----------------- global styling ---------------------*/
+h1, h2, h3, h4, label, p {
+    color: white;
+}
+
+/* ----------------- seat selection ---------------------*/
 .seat {
-    background-color: rgb(219, 218, 218);
+    background-color: rgb(154, 154, 154);
 }
 .seat:hover {
     background-color: rgb(199, 189, 189);
 }
 
-.seat.selected {
-    
+/* ----------------- date of birth features ---------------------*/
+#DoBPickerRegion {
+    position:fixed;
+    top:8%;
+    right:4%;
+    width:200px;
+    height:200px;
+}
+
+.flatpickr-calendar {
+  transform: scale(0.8);
+  transform-origin: top left;
+}
+
+#DoBBtn {
+    border: 2px solid black;
+    border-radius: 1px
+}
+
+/* ----------------- account creation ---------------------*/
+.accountType {
+    background-color: white;
+}
+
+.accountType:hover {
+    background-color: rgb(203, 203, 203);
+}
+
+.accountType.accountSelected {
+    background-color: rgb(170, 170, 170);
+}
+
+.accountType.accountSelected:hover {
+    background-color: rgb(191, 191, 191);
+}
+
+/* ----------------- row selection ---------------------*/
+
+.performanceTableRow:hover > td {
+    background-color: #c3cfe1;
+}
+
+.selected-performanceTableRow > td {
+    background-color: #6ca2ed;
+}
+
+.selected-performanceTableRow:hover > td {
+    background-color: #508bda;
 }

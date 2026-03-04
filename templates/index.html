@@ -6,7 +6,7 @@
     <h2 class="d-flex justify-content-center align-items-center">Theatre booking</h2>
     <section style="height: 150px;"></section>
     <div class="row">
-        <div class="col-md-5 d-flex justify-content-center align-items-center">
+        <div class="col-md-7 d-flex justify-content-center align-items-center">
             <div class="column">
                 <div class="row-md-2">
                     <h3>Login to get started</h3>
@@ -20,18 +20,24 @@
                     <input>
                 </div>
                 <div class="row-md-2 mt-4">
-                    Or
+                    <p>Or</p>
                 </div>
                 <div class="row-md-2 mt-4">
-                    <button class="btn btn-outline-primary">Create Account</button>
+                    <button id="createAccountPageBtn" class="btn btn-outline-primary">Create Account</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 d-flex justify-content-center align-items-center">
-            <h4>Or alternatively</h4>
-        </div>
         <div class="col-md-5 d-flex justify-content-center align-items-center">
-            <button id="viewPerformancesBtn" class="btn btn-outline-primary mt-3">View currently avaiable performances</button>
+            <div class="column">
+                <div class="row-md-6 d-flex align-items-center justify-content-center">
+                    <h4>Or alternatively...</h4>
+                </div>
+                <div class="row-md-6 d-flex align-items-center justify-content-center">
+                    <button id="viewPerformancesBtn" class="btn btn-outline-primary mt-3">View currently avaiable performances</button>
+                </div>
+            </div>
+            
+            
         </div>
     </div>
 </div>
@@ -41,13 +47,14 @@
     <h2 class="d-flex justify-content-center align-items-center">Performances available</h2>
     <section style="height: 150px;"></section>
     <div class="row">
+        <!-- table listing all the performances -->
         <div class="col-md-3">
-            <table class="table table-bordered table-striped mt-3 text-center">
+            <table id="dataTable" class="table table-bordered table-striped mt-3 text-center">
                 <thead style="position: sticky; top: 0;">
                     <tr>
-                        <th>Event</th>
-                        <th>Seats Available</th>
-                        <th>Date</th>
+                        <th id="eventHeader">Event</th>
+                        <th id="seatsHeader">Seats Available</th>
+                        <th id="dateHeader">Date</th>
                     </tr>
                 </thead>
                 <tbody id="performanceTableBody"></tbody>
@@ -55,34 +62,138 @@
         </div>
 
         <!-- seating layout-->
-        <div id="seatingLayout" class="col-md-9" style="height: 360px; width: 602px; background-color: rgb(219, 218, 218); border: 1px solid rgb(125, 125, 125); border-radius: 5px;">
-            <div class="row">
-                <section style="width: 50px;"></section>
-                {% for k in range(20) %} <!-- top row of seats-->
-                    <button id="seat1{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
-                {% endfor %}
-                <section style="width: 50px;"></section>
-            </div>
-            {% for i in range(9) %} <!-- rest of the seats-->
+        <div id="seatingLayout" class="col-md-9 p-0" style="width: 631px; height: 500px;">
+            
+            <!--------------------------the key/legend region--------------------------------->
+            <div style="height: 40px; width: 627px; background-color: rgb(154, 154, 154); border-radius: 10px; border: 1px solid rgb(125, 125, 125);">
+                
                 <div class="row">
-                            {% for k in range(5) %}
-                                <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
-                            {% endfor %}
-                            <section style="width: 50px;"></section>
-                            {% for k in range(10) %}
-                                <button id="seat{{ 9-i }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
-                            {% endfor %}
-                            <section style="width: 50px;"></section>
-                            {% for k in range(5) %}
-                                <button id="seat{{ 9-i }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ url_for('static', filename='img/chair_free.png') }}" style="height: 25px; width: auto;"></button>
-                            {% endfor %}
+                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                        <img src="static/img/booked_chair.png" alt="booked seat" style="height: 25px; width: auto;">
+                        <p>Booked</p>
+                    </div>
+                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                        <img src="static/img/available_chair.png" alt="available seat" style="height: 25px; width: auto;">
+                        <p>Available</p>
+                    </div>
+                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                        <img src="static/img/blocked_chair.png" alt="unavailable seat" style="height: 25px; width: auto;">
+                        <p>Unavailable</p>
+                    </div>
+                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                        <img src="static/img/selected_chair.png" alt="selected seat" style="height: 25px; width: auto;">
+                        <p>Selected</p>
+                    </div>
                 </div>
-            {% endfor %}
-            <section style="height: 30px;"></section>
-            <nav class="d-flex align-items-center justify-content-center"><div style="height: 30px; width: 360px; background-color: grey; border: 2px solid black;" class="d-flex align-items-center justify-content-center">Screen</div></nav>
+            </div>
+
+            <!--------------------------the seats region--------------------------------->
+            <section style="height: 10px;"></section>
+            <div id="seats" style="height: 370px; width: 627px; background-color: rgb(154, 154, 154); border-radius: 10px; border: 1px solid rgb(125, 125, 125);">
+                <section style="height: 10px;"></section>
+                <div class="row">
+                    <section style="width: 75px;"></section>
+                    {% for k in range(20) %} <!-- top row of seats-->
+                        <button id="seat10{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[10][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{chair[10][k]}}" style="height: 25px; width: auto;"></button>
+                    {% endfor %}
+                    <section style="width: 50px;"></section>
+                </div>
+                {% for i in range(9) %} <!-- rest of the seats-->
+                    <div class="row">
+                                <section style="width: 25px;"></section>
+                                {% for k in range(5) %}
+                                    <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="{{ chair_class[9-i][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k]}}" style="height: 25px; width: auto;"></button>
+                                {% endfor %}
+                                <section style="width: 50px;"></section>
+                                {% for k in range(10) %}
+                                    <button id="seat{{ 9-i+5 }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="{{ chair_class[9-i][k+5] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+5]}}" style="height: 25px; width: auto;"></button>
+                                {% endfor %}
+                                <section style="width: 50px;"></section>
+                                {% for k in range(5) %}
+                                    <button id="seat{{ 9-i+15 }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[9-i][k+15] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+15]}}" style="height: 25px; width: auto;"></button>
+                                {% endfor %}
+                    </div>
+                {% endfor %}
+                <section style="height: 30px;"></section>
+                <nav class="d-flex align-items-center justify-content-center"><div style="height: 30px; width: 360px; background-color: grey; border: 2px solid black;" class="d-flex align-items-center justify-content-center">Screen</div></nav>
+            </div>
+
+            <!--------------------------the description region--------------------------------->
+            <section style="height: 10px;"></section>
+            <div class="d-flex align-items-center justify-content-center" style="height: 70px; width: 627px; background-color: rgb(154, 154, 154); border-radius: 10px; border: 1px solid rgb(125, 125, 125);">
+                <p id="performanceDescription">This is the about section for the event/performance being shown right now</p>
+            </div>
         </div>
+    </div>
+</div>
 
+<!--View the create account page-->
+<div id="createAccountPage" class="d-none">
+    <div id="DoBPickerRegion" class="d-none">
+        <h3>Date of Birth</h3>
+        <input id="DoBPicker" placeholder="*">
+    </div>
+    <h2 class="d-flex align-items-center justify-content-center">Create Account</h2>
+    <section style="height: 200px;"></section>
+    <div class="row">
+        <div class="col-md-5 d-flex align-items-center justify-content-center">
+            <div class="column d-flex flex-column gap-3">
+                <div class="row-md-3 d-flex align-items-center justify-content-center"><label>Username</label><section style="width: 50px;"></section><input id="createUserName" placeholder="*"></div>
+                <div class="row-md-3 d-flex align-items-center justify-content-center"><label>Password</label><section style="width: 55px;"></section><input id="createPassword" placeholder="*"></div>
+                <div class="row-md-3 d-flex align-items-center justify-content-center"><label>FirstName</label><section style="width: 50px;"></section><input id="createFirstName" placeholder="*"></div>
+                <div class="row-md-3 d-flex align-items-center justify-content-center"><label>LastName</label><section style="width: 50px;"></section><input id="createLastName" placeholder="*"></div>
+            </div>
+        </div>
+        <div class="col-md-2 d-flex align-items-center justify-content-center">
+            
+        </div>
+        <div class="col-md-5 d-flex align-items-center justify-content-center">
+            <div class="column d-flex flex-column gap-3">
+                <div class="row-md-4 d-flex align-items-center justify-content-center">
+                    <label>Date of Birth</label>
+                    <section style="width: 57px;"></section>
+                    <button id="createDoBBtn" style="width: 190px; border: none; background-color: white;">dd/mm/yyyy</button>
+                </div>
+                <div class="row-md-4 d-flex align-items-center justify-content-center">
+                    <label>Phone Number</label>
+                    <section style="width: 40px;"></section>
+                    <input id="createPhoneNumber">
+                </div>
+                <div class="row-md-4 d-flex align-items-center justify-content-center">
+                    <section style="width: 25px;"></section>
+                    <label>Email</label>
+                    <section style="width: 80px;"></section>
+                    <input id="createEmail">
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <section style="height: 80px;"></section>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <label><h4>Account Type</h4></label>
+    </div>
+
+    <section style="height: 40px;"></section>
+
+    <div class="row">
+        <div class="col-md-3 d-flex justify-content-center align-items-center">
+            <button id="normalCustomerBtn" class="accountType accountSelected" style="border: none;">Normal</button>
+        </div>
+        <div class="col-md-3 d-flex justify-content-center align-items-center">
+            <button id="specialGuestBtn" class="accountType" style="border: none;">Special guest</button>
+        </div>
+        <div class="col-md-3 d-flex justify-content-center align-items-center">
+            <button id="staffBtn" class="accountType" style="border: none;">Staff</button>
+        </div>
+        <div class="col-md-3 d-flex justify-content-center align-items-center">
+            <button id="adminBtn" class="accountType" style="border: none;">Admin</button>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <button id="createAccountBtn" class="btn btn-outline-primary mt-3">Create Account</button>
     </div>
 </div>
 
@@ -90,22 +201,32 @@
 document.getElementById("viewPerformancesBtn").addEventListener("click", () => {
     document.getElementById("loginPage").classList.add("d-none")
     document.getElementById("viewPerformancesPage").classList.remove("d-none")
-    fetch("/performance-data", { /* this sends the requested data to python for sql processing */
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({})
-    })
+    fetch("/performance-data")
     .then (res => res.json())
     .then(data => {
-        for (let i=0; i < data.length; i++) {
+        if (data.length === 0) {
             let row = document.getElementById("performanceTableBody").insertRow()
-            row.dataset.description = data[i][j] //embedd event description in the row
+            let cell = row.insertCell()
+            cell.colSpan = 3
+            cell.textContent = 'No performances available'
+        } else {
+            console.log(data)
+            for (let i=0; i < data['performances'].length; i++) {
+                let row = document.getElementById("performanceTableBody").insertRow()
+                row.classList.add("performanceTableRow")
+                row.dataset.description = data[data['performances'][i]][3] //embed event description in the row
 
-            for (let j=0; j < 3; j++) {
-                row.insertCell(data[i][j]) //dynamically add the cells to the table list
+                for (let j=0; j < 3; j++) {
+                    row.insertCell().textContent = data[data['performances'][i]][j] //dynamically add the cells to the table list
+                }
             }
         }
     })
+})
+
+document.getElementById("createAccountPageBtn").addEventListener("click", () => {
+    document.getElementById("loginPage").classList.add("d-none")
+    document.getElementById("createAccountPage").classList.remove("d-none")
 })
 
 //detects what seat (button or img) was clicked on only within the seatingLayout <div>
@@ -113,22 +234,128 @@ document.getElementById("seatingLayout").addEventListener("click", (event) => {
     if (event.target.tagName === 'BUTTON') {
         if (event.target.classList.contains('selected')) {
             event.target.classList.remove('selected')
-            event.target.querySelector('img').src = 'static/img/chair_free.png'
-        } else {
+            event.target.classList.add('available')
+            event.target.querySelector('img').src = 'static/img/available_chair.png'
+        } else if (event.target.classList.contains('available')) {
+            event.target.classList.remove('available')
             event.target.classList.add('selected')
-            event.target.querySelector('img').src = 'static/img/chair_selected.png'
+            event.target.querySelector('img').src = 'static/img/selected_chair.png'
         }
     } else if (event.target.tagName === 'IMG') {
         if (event.target.closest('button').classList.contains('selected')) {
             event.target.closest('button').classList.remove('selected')
-            event.target.src = 'static/img/chair_free.png'
-        } else {
+            event.target.closest('button').classList.add('available')
+            event.target.src = 'static/img/available_chair.png'
+        } else if (event.target.closest('button').classList.contains('available')) {
+            event.target.closest('button').classList.remove('available')
             event.target.closest('button').classList.add('selected')
-            event.target.closest('img').src = 'static/img/chair_selected.png'
+            event.target.src = 'static/img/selected_chair.png'
         }
     }
 })
 
+//for the list of performances table
+document.getElementById("performanceTableBody").addEventListener("click", (event) => {
+    const selectedRow = event.target.closest('tr')
+    if (!selectedRow) return
+
+    
+    document.querySelectorAll("#performanceTableBody tr.selected-performanceTableRow").forEach(row => row.classList.remove("selected-performanceTableRow")) //removes the selected-row class from any rows with it
+
+    selectedRow.classList.add("selected-performanceTableRow") 
+
+    document.getElementById("performanceDescription").textContent = selectedRow.dataset.description
+})
+
+//creating an account
+const dateOfBirthPicker = flatpickr("#DoBPicker", {
+    dateFormat: "d/m/Y",
+    inline:true,
+
+    onChange: function(selectedDates, dateStr, instance) {
+        if (dateStr === '') {
+            document.getElementById("createDoBBtn").textContent = 'dd/m/yyyy'
+        } else (
+            document.getElementById("createDoBBtn").textContent = dateStr
+        )
+    }
+});
+
+document.getElementById("createDoBBtn").addEventListener("click", () => {
+    if (document.getElementById("DoBPickerRegion").classList.contains('d-none')) {
+        document.getElementById("DoBPickerRegion").classList.remove('d-none')
+    } else (
+        document.getElementById("DoBPickerRegion").classList.add('d-none')
+    )
+})
+
+document.getElementById("normalCustomerBtn").addEventListener("click", () => {
+    if (!document.getElementById("normalCustomerBtn").classList.contains("accountSelected")) {
+        document.getElementById("normalCustomerBtn").classList.add('accountSelected')
+
+        document.getElementById("staffBtn").classList.remove('accountSelected')
+        document.getElementById("specialGuestBtn").classList.remove('accountSelected')
+        document.getElementById("adminBtn").classList.remove('accountSelected')
+    }
+})
+
+document.getElementById("staffBtn").addEventListener("click", () => {
+    if (!document.getElementById("staffBtn").classList.contains("accountSelected")) {
+        document.getElementById("staffBtn").classList.add('accountSelected')
+
+        document.getElementById("normalCustomerBtn").classList.remove('accountSelected')
+        document.getElementById("specialGuestBtn").classList.remove('accountSelected')
+        document.getElementById("adminBtn").classList.remove('accountSelected')
+    }
+})
+
+document.getElementById("specialGuestBtn").addEventListener("click", () => {
+    if (!document.getElementById("specialGuestBtn").classList.contains("accountSelected")) {
+        document.getElementById("specialGuestBtn").classList.add('accountSelected')
+
+        document.getElementById("normalCustomerBtn").classList.remove('accountSelected')
+        document.getElementById("staffBtn").classList.remove('accountSelected')
+        document.getElementById("adminBtn").classList.remove('accountSelected')
+    }
+})
+
+document.getElementById("adminBtn").addEventListener("click", () => {
+    if (!document.getElementById("adminBtn").classList.contains("accountSelected")) {
+        document.getElementById("adminBtn").classList.add('accountSelected')
+
+        document.getElementById("normalCustomerBtn").classList.remove('accountSelected')
+        document.getElementById("staffBtn").classList.remove('accountSelected')
+        document.getElementById("specialGuestBtn").classList.remove('accountSelected')
+    }
+})
+
+document.getElementById("createAccountBtn").addEventListener("click", () => {
+    let userType = null
+    if (document.getElementById("normalCustomerBtn").classList.contains("accountSelected")) {
+        userType = 'normal'
+    } else if (document.getElementById("specialGuestBtn").classList.contains("accountSelected")) {
+        userType = 'specialGuest'
+    } else if (document.getElementById("staffBtn").classList.contains("accountSelected")) {
+        userType = 'staff'
+    } else if (document.getElementById("adminBtn").classList.contains("accountSelected")) {
+        userType = 'admin'
+    } 
+
+    fetch(
+        "/create-account", { /* this sends the requested data to python for sql processing */
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({  'userName': document.getElementById("createUserName").value,
+                                'password': document.getElementById("createPassword").value,
+                                'firstName': document.getElementById("createFirstName").value,
+                                'lastName': document.getElementById("createLastName").value,
+                                'dateOfBirth': document.getElementById("createDoBBtn").textContent,
+                                'phoneNumber': String(document.getElementById("createPhoneNumber").value),
+                                'email': document.getElementById("createEmail").value,
+                                'userType': userType
+        })
+    })
+})
 
 </script>
 

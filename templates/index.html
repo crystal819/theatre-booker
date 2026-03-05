@@ -11,13 +11,16 @@
                 <div class="row-md-2">
                     <h3>Login to get started</h3>
                 </div>
-                <div class="row-md-3 mt-4">
+                <div class="row-md-2 mt-4">
                     <label>Username</label>
-                    <input>
+                    <input id="loginUsername">
                 </div>
-                <div class="row-md-3 mt-2">
+                <div class="row-md-2 mt-2">
                     <label>Password</label>
-                    <input>
+                    <input id="loginPassword">
+                </div>
+                <div class="row-md-2 mt-4">
+                    <button id="loginToAccountBtn" class="btn btn-outline-primary">Login</button>
                 </div>
                 <div class="row-md-2 mt-4">
                     <p>Or</p>
@@ -355,7 +358,28 @@ document.getElementById("createAccountBtn").addEventListener("click", () => {
                                 'userType': userType
         })
     })
+    .then(res => res.json())
+    .then(data => {
+        if (data['outcome'] === 'successful') {
+            window.location.reload()
+        }
+    })
 })
+
+document.getElementById("loginToAccountBtn").addEventListener("click", () => {
+    alert('HELLO there - trying to login?')
+    fetch("/login", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({  'userName': document.getElementById("loginUsername").value,
+                                'password': document.getElementById("loginPassword").value
+        })
+    })
+    .then(res => res.json())
+})
+
+
+
 
 </script>
 

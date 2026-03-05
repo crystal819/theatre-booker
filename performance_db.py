@@ -64,6 +64,7 @@ class PerformanceDB:
         with self._get_connection() as conn:
             username_check = conn.cursor().execute(f"SELECT * FROM users WHERE userName = '{data['userName']}'").fetchall()
         if len(username_check) != 0:
+            print("user already registered")
             return False
 
         DoB = date(int(self.convert_date_to_ISO(data['dateOfBirth'])[:4]), int(self.convert_date_to_ISO(data['dateOfBirth'])[5:7]), int(self.convert_date_to_ISO(data['dateOfBirth'])[8:10]))
@@ -96,11 +97,29 @@ class PerformanceDB:
         
         password_hash = hashed.hex()+'$'+salt.hex()+'$'+str(iterations)
 
-        sql = f"INSERT INTO users VALUES ('{data['userName']}', '{password_hash}', '{data['firstName']}', '{data['lastName']}', '{data['email']}', {self.convert_date_to_ISO(data['dateOfBirth'])}, {data['phoneNumber']}, '{data['userType']}')"
+        sql = f"INSERT INTO users VALUES ('{data['userName']}', '{password_hash}', '{data['firstName']}', '{data['lastName']}', '{data['email']}', '{self.convert_date_to_ISO(data['dateOfBirth'])}', '{data['phoneNumber']}', '{data['userType']}')"
         print(sql)
         with self._get_connection() as conn:
             conn.cursor().execute(sql)
             print('Account created', sql)
         
         return True
+
+    def login(self, data):
+        with self._get_connection() as conn:
+            sql = f"SELECT userName, passwordHash, userType FROM users WHERE userName = '{data['userName']}'"
+            user = conn.cursor().execute(sql).fetchone()
+        if user == None: #checks the userName exists
+            return False
+        
+        old_hash = bytes.fromhex(user[1][:64].encode('utf-8')) #converts the string to bin which is currently in hex format and then converts hex to bytes
+        salt = bytes.fromhex(user[1][65:97].encode('utf-8'))
+        iterations = int(user[1][98:])
+
+        new_hash = pbkdf2_hmac('sha256', data['password'].encode('utf-8'), salt, iterations)
+
+        if new_hash != old_hash: #checks password hashes are the same for the userName entered
+            return False
+        
+        return user[2] #returns the userType 
 

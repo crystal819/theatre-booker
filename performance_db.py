@@ -150,4 +150,5 @@ class PerformanceDB:
             for j in range(seats):
                 seats_str += seats[j] + ', '
             seats_str = seats_str[:-2]
-
+            future_tickets.append((booking[0], booking[1], booking[2], seats_str, booking[3]))
+        return future_tickets

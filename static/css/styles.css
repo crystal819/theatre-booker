@@ -66,6 +66,7 @@ h1, h2, h3, h4, label, p {
 .tab-selector {
     border: 1px solid black;
     background-color: #d7dce2;
+    margin: 5px;
 }
 
 .tab-selector:hover {
@@ -75,10 +76,38 @@ h1, h2, h3, h4, label, p {
 .tab-selector.selected-tab {
     background-color: #87898e;
     border: 3px solid black;
+    margin: 2px !important
 }
 
 .future-ticket {
     border: 1px solid rgba(255, 255, 255, 0.653);
     background-color: rgba(209, 209, 209, 0.2);
     padding: 5px;
+}
+
+.tab-widget {
+    width: 50vw;
+    padding: 1rem;
+    margin: 2rem auto;
+    border-radius: 1rem;
+    background-color: rgb(49, 49, 49);
+    box-shadow: 0 10px 20px 0 rgba(73, 73, 73, 0.17);
+}
+
+#tab-menu {
+    display: flex;
+    height: 3.5rem;
+    border-block-end: 1px solid white;
+}
+
+#tab-menu input {
+    display: none;
+}
+
+#tab-menu label {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.5 ease-in-out;
 }

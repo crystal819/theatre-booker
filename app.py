@@ -52,8 +52,7 @@ def login():
         session['userName'] = data['userName']
         session['userType'] = userType
         return jsonify({'isSuccessful': 'true',
-                        'redirect': '/dashboard'
-        })
+                        'redirect': '/dashboard'})
     else:
         return jsonify({'isSuccessful': 'false',
                         'errorMsg': 'You entered invalid data or someone has already taken this username, try again'})
@@ -66,6 +65,7 @@ def dashboard():
         days_until_performance = 0
         customer_name = db.get_name(session['userName'])
         future_tickets = db.get_future_tickets(session['userName'])
+        print(future_tickets)
         return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets)
     elif session['userType'] == 'staff':
         return render_template("staff_dashboard.html")

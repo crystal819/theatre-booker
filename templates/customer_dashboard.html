@@ -22,16 +22,20 @@
 <section style="height: 50px;"></section>
 
 <div class="d-flex justify-content-center align-items-center">
-    <div class="column tabs">
-        <div class="col-md-12 tab-selection-row"> <!-- the top row where you can select the tabs -->
-            <button id="future-tickets-tab-btn" class="tab-selector selected-tab">Upcoming Tickets</button>
+    <div class="column tab-widget">
+        <div id="tab-menu" class="col-md-12 tab-selection-row"> <!-- the top row where you can select the tabs -->
+            <!--<button id="future-tickets-tab-btn" class="tab-selector selected-tab">Upcoming Tickets</button>
             <button id="payments-tab-btn" class="tab-selector">Past Payments</button>
             <button id="bookMore-tab-btn" class="tab-selector">Book More</button>
-            <button id="unapproved-tab-btn" class="tab-selector">Unapproved Bookings</button>
+            <button id="unapproved-tab-btn" class="tab-selector">Unapproved Bookings</button>-->
+            <input type="radio" id="future-tickets-tab-btn" name="tabs" checked><label for="future-tickets-tab-btn">Upcoming Tickets</label>
+            <input type="radio" id="payments-tab-btn" name="tabs"><label for="payments-tab-btn">Payments</label>
+            <input type="radio" id="bookMore-tab-btn" name="tabs"><label for="bookMore-tab-btn">Book More</label>
+            <input type="radio" id="unapproved-tab-btn" name="tabs"><label for="unapproved-tab-btn">Unapproved Bookings</label>
         </div>
         <div class="col-md-12 tab-display" style="max-height: 300px; overflow-y: auto; padding: 10px; border: 1px solid white;"> <!-- the actual content of the selected tab -->
             <div id="future-tickets-tab-display" class="tab-display" style="margin: 0 auto">
-                {% if future_tickets != None %} 
+                {% if future_tickets != None and future_tickets|length != 0 %} 
                     {% for i in range(future_tickets|length) %}
                         <section style="height: 5px;"></section>
                         <div id="booking{{ future_tickets[i] }}" class="row future-ticket">
@@ -117,7 +121,34 @@
     </div>
 </div>
 
+<script>
+document.getElementById("future-tickets-tab-btn").addEventListener("click", () => {
+    document.getElementById("future-tickets-tab-btn").classList.add('selected-tab')
+    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
+    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
+    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+})
+document.getElementById("payments-tab-btn").addEventListener("click", () => {
+    document.getElementById("payments-tab-btn").classList.add('selected-tab')
 
+    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
+    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
+    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+})
+document.getElementById("bookMore-tab-btn").addEventListener("click", () => {
+    document.getElementById("bookMore-tab-btn").classList.add('selected-tab')
+    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
+    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
+    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+})
+document.getElementById("unapproved-tab-btn").addEventListener("click", () => {
+    document.getElementById("unapproved-tab-btn").classList.add('selected-tab')
+    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
+    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
+    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
+    
+})
+</script>
 
 
 

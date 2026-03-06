@@ -1,1 +1,1 @@
-int('fweuo')
+print('hello'[:-2])

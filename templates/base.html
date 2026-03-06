@@ -11,6 +11,7 @@
     <body style="background-image: url('static/img/dark_bg1.jpg'); background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
         <nav class="d-flex justify-content-end">
             <button id="loginBtn">Login</button>
+            <button id="profileBtn" class="d-none d-flex align-items-center justify-content-center" style="background-color: transparent; border: none;"><img src="/static/img/profile_img.jpg" style="width: 30px; height: auto;"></button>
         </nav>
         <main class="container">{% block content%} {% endblock %}</main>
     </body>
@@ -19,5 +20,8 @@
 <script>
 document.getElementById("loginBtn").addEventListener("click", () => {
     window.location.reload()
+})
+document.getElementById("profileBtn").addEventListener("click", () => {
+    window.location.href = '/dashboard'
 })
 </script>

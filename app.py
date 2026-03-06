@@ -51,15 +51,22 @@ def login():
     if userType != False:
         session['userName'] = data['userName']
         session['userType'] = userType
-        return redirect('/dashboard')
+        return jsonify({'isSuccessful': 'true',
+                        'redirect': '/dashboard'
+        })
     else:
-        return jsonify({'outcome': 'unsuccessful',
+        return jsonify({'isSuccessful': 'false',
                         'errorMsg': 'You entered invalid data or someone has already taken this username, try again'})
 
 @app.route('/dashboard')
 def dashboard():
+    if 'userType' not in session:
+        return redirect("/")
     if session['userType'] == 'normal' or session['userType'] == 'specialGuest':
-        return render_template("customer_dashboard.html")
+        days_until_performance = 0
+        customer_name = db.get_name(session['userName'])
+        future_tickets = db.get_future_tickets(session['userName'])
+        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets)
     elif session['userType'] == 'staff':
         return render_template("staff_dashboard.html")
     elif session['userType'] == 'admin':

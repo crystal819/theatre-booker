@@ -112,8 +112,8 @@ class PerformanceDB:
         if user == None: #checks the userName exists
             return False
         
-        old_hash = bytes.fromhex(user[1][:64].encode('utf-8')) #converts the string to bin which is currently in hex format and then converts hex to bytes
-        salt = bytes.fromhex(user[1][65:97].encode('utf-8'))
+        old_hash = bytes.fromhex(user[1][:64]) #converts the string to bin which is currently in hex format and then converts hex to bytes
+        salt = bytes.fromhex(user[1][65:97])
         iterations = int(user[1][98:])
 
         new_hash = pbkdf2_hmac('sha256', data['password'].encode('utf-8'), salt, iterations)
@@ -122,4 +122,32 @@ class PerformanceDB:
             return False
         
         return user[2] #returns the userType 
+    
+    def get_name(self, userName):
+        sql = f"SELECT firstName, lastName FROM users WHERE userName = '{userName}'"
+        with self._get_connection() as conn:
+            name = conn.cursor().execute(sql).fetchall()
+        if name[0][1] != None:
+            return name[0][0] + ' ' + name[0][1] #returns first name and last name together if the user has entered a last name when creating their account
+        return name[0]
+
+    def get_future_tickets(self, userName):
+        future_tickets = []
+
+        sql1 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND performanceID = (SELECT performanceID FROM performance WHERE performanceDate >= '{date.today()}')"
+        with self._get_connection() as conn:
+            bookingIDs = conn.cursor().execute(sql1).fetchall()
+        
+        for i in range(len(bookingIDs)):
+            sql2 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[i]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[i]})) p ON b.performanceID = p.performanceID"
+            with self._get_connection() as conn:
+                booking = conn.cursor().execute(sql2).fetchall()
+
+            sql3 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[i]}'"
+            with self._get_connection() as conn:
+                seats = conn.cursor().execute(sql3).fetchall()
+            seats_str = ''
+            for j in range(seats):
+                seats_str += seats[j] + ', '
+            seats_str = seats_str[:-2]
 

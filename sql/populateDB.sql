@@ -1,30 +1,55 @@
-insert into users values
-('admin1', '$2b$12$KIX8mFz9YwqJz3Qk0pR2re9uC8yF7nT6uQvLxH1oZk9mJt3pWqR5C', 'Alice', 'Johnson', 'admin1@email.com', '1980-05-12', 701111111, 45, 'admin'),
-('staff1', '$2b$12$LZp9xQvH7mW2kR8tYf3sDe1nC4uB6aJkL9pQ2rT5vW8xYz1A3bC6D', 'Mark', 'Stevens', 'mark.s@email.com', '1985-09-22', 702222222, 40, 'staff'),
-('jdoe', '$2b$12$AbC123xYz987LmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ12', 'John', 'Doe', 'jdoe@email.com', '1998-02-14', 703333333, 28, 'customer'),
-('swhite', '$2b$12$ZxY987wVuTsRqPoNmLkJiHgFeDcBaZyXwVuTsRqPoNmLkJiHgFeDcB1', 'Sophie', 'White', 's.white@email.com', '1995-11-03', 704444444, 30, 'customer'),
-('bking', '$2b$12$QwErTyUiOpAsDfGhJkLzXcVbNmQwErTyUiOpAsDfGhJkLzXcVbNm12', 'Ben', 'King', 'ben.k@email.com', '2001-07-19', 705555555, 24, 'customer'),
-('lgreen', '$2b$12$MnBvCxZlKjHgFdSaQwErTyUiOpMnBvCxZlKjHgFdSaQwErTyUiOp12', 'Lucy', 'Green', 'lucy.g@email.com', '1999-04-08', 706666666, 26, 'customer');
+-- Users
+INSERT INTO users (userName, passwordHash, firstName, lastName, email, DoB, phone, userType) VALUES
+('taras999', '115e33d730d06da524b64bae8d7fef7f6489c5089ace0d68c3eef399524a4471$6bf2e17ba8b0ded8bbadc7078d750976$1000', 'Taras', 'Svynarchuk', 'tarascollyers@gmail.com', '2008-11-04', '07123456789', 'admin'), -- password: SuperSecure123
+('alice123', '141032070ce3621a941d994134a8528f542b6caf9a84686c8f08d7d7b079c978$35a96d8694e62f81b18217bd50ba9ed2$1000', 'Alice', 'Johnson', 'alice.j@example.com', '1995-07-12', '07234567890', 'specialGuest'), -- password: AlicePass456
+('bob456', 'b047fc1e33f63381471f3d7297d60b4f23c217610866a5f6d0b542b1b900e069$5ca9293a15ea10c531e4d7a3a8133f52$1000', 'Bob', 'Smith', 'bob.smith@example.com', '1988-03-23', '07345678901', 'normal'), -- password: BobSecret789
+('carol789', 'f48f7d77b88ce6e4e11de13dd930e112aebb8bbb1830df5c4a0f4c3f5dcb154b$ee75ecf75b9e78e607fa91f9309ae106$1000', 'Carol', 'White', 'carol.white@example.com', '2000-09-30', '07456789012', 'staff'); -- password: CarolPwd321
 
-insert into performance values
-(201, '2026-04-10', 'Drama', 'Hamlet', 'A Shakespeare tragedy'),
-(202, '2026-04-15', 'Comedy', 'LaughNight', 'Stand-up comedy evening'),
-(203, '2026-04-20', 'Musical', 'BroadwayMix', 'A mix of famous musicals'),
-(204, '2026-04-25', 'Dance', 'UrbanMoves', 'Street and contemporary dance'),
-(205, '2026-05-01', 'Opera', 'LaTraviata', 'Classic Italian opera');
+-- Performance
+INSERT INTO performance (performanceID, performanceDate, eventType, performanceName, description) VALUES
+(1, '2026-04-15', 'Theatre', 'Hamlet', 'A Shakespearean tragedy performance'),
+(2, '2026-04-20', 'Concert', 'Rock Night', 'An evening of classic rock music'),
+(3, '2026-05-05', 'Opera', 'La Traviata', 'A famous opera by Verdi'),
+(4, '2026-05-10', 'Comedy', 'Stand-Up Special', 'An evening of stand-up comedy with multiple comedians');
 
-insert into booking values
-(2001, 'jdoe', 201, 'admin1'),
-(2002, 'swhite', 201, 'staff1'),
-(2003, 'swhite', 202, NULL),
-(2004, 'bking', 203, 'admin1'),
-(2005, 'jdoe', 204, NULL);
+-- Booking
+INSERT INTO booking (bookingID, userName, performanceID, approved, price, bookingDate) VALUES
+(101, 'alice123', 1, 'taras999', 50, '2026-03-01'),
+(102, 'bob456', 2, 'carol789', 75, '2026-03-02'),
+(103, 'alice123', 3, 'taras999', 60, '2026-03-03'),
+(104, 'bob456', 4, 'carol789', 40, '2026-03-04');
+-- Additional Bookings
+INSERT INTO booking (bookingID, userName, performanceID, approved, price, bookingDate) VALUES
+(105, 'alice123', 2, 'taras999', 75, '2026-03-05'),
+(106, 'bob456', 1, 'carol789', 50, '2026-03-05'),
+(107, 'alice123', 4, 'taras999', 40, '2026-03-06'),
+(108, 'bob456', 3, 'carol789', 60, '2026-03-06'),
+(109, 'alice123', 1, 'taras999', 50, '2026-03-07'),
+(110, 'bob456', 2, 'carol789', 75, '2026-03-07'),
+(111, 'alice123', 3, 'taras999', 60, '2026-03-08'),
+(112, 'bob456', 4, 'carol789', 40, '2026-03-08');
 
-insert into seat values
-('A1', 2001, 201),
-('A2', 2002, 201),
-('B1', 2003, 202),
-('C3', 2004, 203),
-('D4', NULL, 204),     -- seat exists but not booked
-('E1', 2005, 204),
-('F2', NULL, 205);     -- performance exists but no bookings
+-- Seat
+INSERT INTO seat (seatPos, bookingID, performanceID) VALUES
+('A1', 101, 1),
+('A2', 101, 1),
+('B5', 102, 2),
+('B6', 102, 2),
+('C3', 103, 3),
+('C4', 103, 3),
+('D1', 104, 4),
+('D2', 104, 4);
+-- Additional Seats
+INSERT INTO seat (seatPos, bookingID, performanceID) VALUES
+('A3', 105, 2),
+('A4', 105, 2),
+('B7', 106, 1),
+('B8', 106, 1),
+('C5', 107, 4),
+('C6', 107, 4),
+('D3', 108, 3),
+('D4', 108, 3),
+('E1', 109, 1),
+('E2', 110, 2),
+('F1', 111, 3),
+('F2', 112, 4);

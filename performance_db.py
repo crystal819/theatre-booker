@@ -101,7 +101,6 @@ class PerformanceDB:
         print(sql)
         with self._get_connection() as conn:
             conn.cursor().execute(sql)
-            print('Account created', sql)
         
         return True
 
@@ -134,21 +133,49 @@ class PerformanceDB:
     def get_future_tickets(self, userName):
         future_tickets = []
 
-        sql1 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND performanceID = (SELECT performanceID FROM performance WHERE performanceDate >= '{date.today()}')"
+        sql1 = f"SELECT performanceID FROM performance WHERE performanceDate >= '{date.today()}'"
+        with self._get_connection() as conn:
+            performanceIDs = conn.cursor().execute(sql1).fetchall()
+
+        for i in range(len(performanceIDs)):
+            sql2 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND performanceID = {performanceIDs[i][0]}"
+            with self._get_connection() as conn:
+                bookingIDs = conn.cursor().execute(sql2).fetchall()
+
+            for j in range(len(bookingIDs)):
+                sql3 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[j][0]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[j][0]})) p ON b.performanceID = p.performanceID"
+                with self._get_connection() as conn:
+                    booking = conn.cursor().execute(sql3).fetchall()
+
+                sql4 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[j][0]}'"
+                with self._get_connection() as conn:
+                    seats = conn.cursor().execute(sql4).fetchall()
+
+                seats_str = ''
+                for k in range(len(seats)):
+                    seats_str += seats[k][0] + ', '
+                seats_str = seats_str[:-2]
+                future_tickets.append((booking[0][0], booking[0][1], booking[0][2], seats_str, booking[0][3]))
+        return future_tickets
+    
+    def get_past_bookings(self, userName):
+        past_bookings = []
+
+        sql1 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND approved != 'false'"
         with self._get_connection() as conn:
             bookingIDs = conn.cursor().execute(sql1).fetchall()
         
         for i in range(len(bookingIDs)):
-            sql2 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[i]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[i]})) p ON b.performanceID = p.performanceID"
+            sql2 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]})) p ON b.performanceID = p.performanceID"
             with self._get_connection() as conn:
                 booking = conn.cursor().execute(sql2).fetchall()
 
-            sql3 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[i]}'"
+            sql3 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[i][0]}'"
             with self._get_connection() as conn:
                 seats = conn.cursor().execute(sql3).fetchall()
             seats_str = ''
-            for j in range(seats):
-                seats_str += seats[j] + ', '
+            for j in range(len(seats)):
+                seats_str += seats[j][0] + ', '
             seats_str = seats_str[:-2]
-            future_tickets.append((booking[0], booking[1], booking[2], seats_str, booking[3]))
-        return future_tickets
+            past_bookings.append((booking[0][0], booking[0][1], booking[0][2], seats_str, booking[0][3]))
+        return past_bookings

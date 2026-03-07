@@ -63,26 +63,22 @@ h1, h2, h3, h4, label, p {
 
 /*------------------ customer tab ui ------------------*/
 
-.tab-selector {
-    border: 1px solid black;
-    background-color: #d7dce2;
-    margin: 5px;
+.tab-display {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 2rem;
+    border-left: 1px solid rgb(121, 121, 121);
+    border-right: 1px solid rgb(121, 121, 121);
+    border-bottom: 1px solid rgb(121, 121, 121);
+    scrollbar-width: none; 
 }
 
-.tab-selector:hover {
-    background-color: #acaeb2;
-}
-
-.tab-selector.selected-tab {
-    background-color: #87898e;
-    border: 3px solid black;
-    margin: 2px !important
-}
-
-.future-ticket {
+.ticket {
     border: 1px solid rgba(255, 255, 255, 0.653);
     background-color: rgba(209, 209, 209, 0.2);
     padding: 5px;
+    margin-bottom: 8px;
 }
 
 .tab-widget {
@@ -90,24 +86,66 @@ h1, h2, h3, h4, label, p {
     padding: 1rem;
     margin: 2rem auto;
     border-radius: 1rem;
-    background-color: rgb(49, 49, 49);
+    background-color: rgba(49, 49, 49, 0.659);
     box-shadow: 0 10px 20px 0 rgba(73, 73, 73, 0.17);
 }
 
-#tab-menu {
+.tab-menu {
+    --active: 0;
+
+    position: relative;
+    isolation: isolate;
     display: flex;
     height: 3.5rem;
-    border-block-end: 1px solid white;
+    border-block-end: 1px solid rgb(121, 121, 121);
 }
 
-#tab-menu input {
+.tab-menu input {
     display: none;
 }
 
-#tab-menu label {
+.tab-menu label {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: color 0.5 ease-in-out;
+    color: #b1b1b1;
 }
+
+.tab-menu .selected-tab input {
+    color: white;
+}
+
+.tab-menu::after {
+    pointer-events: none;
+    position: absolute;
+    content: "";
+    inset: 0 0 -1px;
+    width: calc((100% / 4) - 2px);
+    border-radius: 0.5rem 0.5rem 0 0;
+    border: 1px solid rgb(121, 121, 121);
+    border-block-end: none;
+    background-image: linear-gradient(rgb(120, 120, 120), rgb(49, 49, 49));
+    z-index: -1;
+    translate: calc(var(--active) * 100%);
+    transition: translate 0.5s ease-in-out;
+}
+
+.tab-menu:has(:checked:nth-of-type(1)) {
+    --active: 0;
+}
+
+.tab-menu:has(:checked:nth-of-type(2)) {
+    --active: 1;
+}
+
+.tab-menu:has(:checked:nth-of-type(3)) {
+    --active: 2;
+}
+
+.tab-menu:has(:checked:nth-of-type(4)) {
+    --active: 3;
+}
+
+/*------------------------------------------------------------*/

@@ -23,22 +23,17 @@
 
 <div class="d-flex justify-content-center align-items-center">
     <div class="column tab-widget">
-        <div id="tab-menu" class="col-md-12 tab-selection-row"> <!-- the top row where you can select the tabs -->
-            <!--<button id="future-tickets-tab-btn" class="tab-selector selected-tab">Upcoming Tickets</button>
-            <button id="payments-tab-btn" class="tab-selector">Past Payments</button>
-            <button id="bookMore-tab-btn" class="tab-selector">Book More</button>
-            <button id="unapproved-tab-btn" class="tab-selector">Unapproved Bookings</button>-->
-            <input type="radio" id="future-tickets-tab-btn" name="tabs" checked><label for="future-tickets-tab-btn">Upcoming Tickets</label>
+        <div class="col-md-12 tab-selection-row tab-menu"> <!-- the top row where you can select the tabs -->
+            <input type="radio" id="future-tickets-tab-btn" name="tabs" checked class="selected-tab"><label for="future-tickets-tab-btn">Upcoming Tickets</label>
             <input type="radio" id="payments-tab-btn" name="tabs"><label for="payments-tab-btn">Payments</label>
             <input type="radio" id="bookMore-tab-btn" name="tabs"><label for="bookMore-tab-btn">Book More</label>
             <input type="radio" id="unapproved-tab-btn" name="tabs"><label for="unapproved-tab-btn">Unapproved Bookings</label>
         </div>
-        <div class="col-md-12 tab-display" style="max-height: 300px; overflow-y: auto; padding: 10px; border: 1px solid white;"> <!-- the actual content of the selected tab -->
-            <div id="future-tickets-tab-display" class="tab-display" style="margin: 0 auto">
+        <div class="col-md-12 tab-display"> <!-- the actual content of the selected tab -->
+            <div id="future-tickets-tab-display">
                 {% if future_tickets != None and future_tickets|length != 0 %} 
                     {% for i in range(future_tickets|length) %}
-                        <section style="height: 5px;"></section>
-                        <div id="booking{{ future_tickets[i] }}" class="row future-ticket">
+                        <div id="booking{{ future_tickets[i] }}" class="row ticket">
                             <div class="col-md-2 column" style="border-right: 1px dashed white">
                                 <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
                                     <div class="col-md-12 d-flex align-items-center justify-content-center">
@@ -90,12 +85,12 @@
                             <div class="col-md-2 column">
                                 <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
                                     <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Price</p>
+                                        <p>Price Paid</p>
                                     </div>
                                 </div>
                                 <div class="row-md-12 row">
                                     <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ future_tickets[i][4] }}</p>
+                                        <p>£ {{ future_tickets[i][4] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,13 +103,83 @@
                     </div>
                 {% endif %}
             </div>
-            <div id="payments-tab-display" class="tab-display d-none">
+            <div id="payments-tab-display" class="d-none">
+                {% if past_bookings != None and past_bookings|length != 0 %} 
+                    {% for i in range(past_bookings|length) %}
+                        <div id="past_booking{{ past_bookings[i] }}" class="row ticket">
+                            <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>BookingID</p>
+                                    </div>
+                                </div>
+                                <div class="row-md-12 row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>{{ past_bookings[i][0] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>Performance</p>
+                                    </div>
+                                </div>
+                                <div class="row-md-12 row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>{{ past_bookings[i][1] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>Date</p>
+                                    </div>
+                                </div>
+                                <div class="row-md-12 row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>{{ past_bookings[i][2] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>Seats</p>
+                                    </div>
+                                </div>
+                                <div class="row-md-12 row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>{{ past_bookings[i][3] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 column">
+                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>Price Paid</p>
+                                    </div>
+                                </div>
+                                <div class="row-md-12 row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <p>£ {{ past_bookings[i][4] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <section style="height: 5px;"></section>
+                    {% endfor %}
+                {% else %}
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p>You have not made any payments yet</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="bookMore-tab-display" class="d-none">
                 
             </div>
-            <div id="bookMore-tab-display" class="tab-display d-none">
-                
-            </div>
-            <div id="unapproved-tab-display" class="tab-display d-none">
+            <div id="unapproved-tab-display" class="d-none">
                 
             </div>
         </div>
@@ -122,31 +187,29 @@
 </div>
 
 <script>
-document.getElementById("future-tickets-tab-btn").addEventListener("click", () => {
-    document.getElementById("future-tickets-tab-btn").classList.add('selected-tab')
-    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
-    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
-    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+document.getElementById("future-tickets-tab-btn").addEventListener("change", () => {
+    document.getElementById("future-tickets-tab-display").classList.remove("d-none")
+    document.getElementById("payments-tab-display").classList.add("d-none")
+    document.getElementById("bookMore-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
 })
-document.getElementById("payments-tab-btn").addEventListener("click", () => {
-    document.getElementById("payments-tab-btn").classList.add('selected-tab')
-
-    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
-    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
-    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+document.getElementById("payments-tab-btn").addEventListener("change", () => {
+    document.getElementById("future-tickets-tab-display").classList.add("d-none")
+    document.getElementById("payments-tab-display").classList.remove("d-none")
+    document.getElementById("bookMore-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
 })
-document.getElementById("bookMore-tab-btn").addEventListener("click", () => {
-    document.getElementById("bookMore-tab-btn").classList.add('selected-tab')
-    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
-    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
-    document.getElementById("unapproved-tab-btn").classList.remove('selected-tab')
+document.getElementById("bookMore-tab-btn").addEventListener("change", () => {
+    document.getElementById("future-tickets-tab-display").classList.add("d-none")
+    document.getElementById("payments-tab-display").classList.add("d-none")
+    document.getElementById("bookMore-tab-display").classList.remove("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
 })
-document.getElementById("unapproved-tab-btn").addEventListener("click", () => {
-    document.getElementById("unapproved-tab-btn").classList.add('selected-tab')
-    document.getElementById("future-tickets-tab-btn").classList.remove('selected-tab')
-    document.getElementById("payments-tab-btn").classList.remove('selected-tab')
-    document.getElementById("bookMore-tab-btn").classList.remove('selected-tab')
-    
+document.getElementById("unapproved-tab-btn").addEventListener("change", () => {
+    document.getElementById("future-tickets-tab-display").classList.add("d-none")
+    document.getElementById("payments-tab-display").classList.add("d-none")
+    document.getElementById("bookMore-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.remove("d-none")
 })
 </script>
 

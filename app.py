@@ -65,8 +65,8 @@ def dashboard():
         days_until_performance = 0
         customer_name = db.get_name(session['userName'])
         future_tickets = db.get_future_tickets(session['userName'])
-        print(future_tickets)
-        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets)
+        past_bookings = db.get_past_bookings(session['userName'])
+        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets, past_bookings=past_bookings)
     elif session['userType'] == 'staff':
         return render_template("staff_dashboard.html")
     elif session['userType'] == 'admin':

@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<section style="height: 2rem;"></section>
 <div class="d-flex justify-content-center align-items-center">
-    <h1>Customer dashboard</h1>
+    <h1>Welcome back, {{ customer_name }}</h1>
 </div>
-<section style="height: 50px;"></section>
-<div class="d-flex justify-content-center align-items-center">
-    <h3>Welcome back, {{ customer_name }}</h3>
-</div>
+<section style="height: 1rem;"></section>
 <div class="d-flex justify-content-center align-items-center">
     {% if days_until_performance == None %}
     <p>You dont have any tickets for performances</p>
@@ -19,7 +17,7 @@
     {% endif %}
 </div>
     
-<section style="height: 50px;"></section>
+<section style="height: 1rem;"></section>
 
 <div class="d-flex justify-content-center align-items-center">
     <div class="column tab-widget">
@@ -29,158 +27,239 @@
             <input type="radio" id="bookMore-tab-btn" name="tabs"><label for="bookMore-tab-btn">Book More</label>
             <input type="radio" id="unapproved-tab-btn" name="tabs"><label for="unapproved-tab-btn">Unapproved Bookings</label>
         </div>
-        <div class="col-md-12 tab-display"> <!-- the actual content of the selected tab -->
-            <div id="future-tickets-tab-display">
-                {% if future_tickets != None and future_tickets|length != 0 %} 
-                    {% for i in range(future_tickets|length) %}
-                        <div id="booking{{ future_tickets[i] }}" class="row ticket">
-                            <div class="col-md-2 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>BookingID</p>
+        <div class="col-md-12 outer-tab-display">
+            <div class="tab-display"> <!-- the actual content of the selected tab -->
+                <div id="future-tickets-tab-display">
+                    {% if future_tickets != None and future_tickets|length != 0 %} 
+                        {% for i in range(future_tickets|length) %}
+                            <div id="booking{{ future_tickets[i] }}" class="row ticket">
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>BookingID</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ future_tickets[i][0] }}</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ future_tickets[i][0] }}</p>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Performance</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ future_tickets[i][1] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Date</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ future_tickets[i][2] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Seats</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ future_tickets[i][3] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Price Paid</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>£ {{ future_tickets[i][4] }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Performance</p>
+                            <section style="height: 0.25rem;"></section>
+                        {% endfor %}
+                    {% else %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p>You have no bookings for future performances</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div id="payments-tab-display" class="d-none">
+                    {% if past_bookings != None and past_bookings|length != 0 %} 
+                        {% for i in range(past_bookings|length) %}
+                            <div id="past_booking{{ past_bookings[i] }}" class="row ticket">
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>BookingID</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ past_bookings[i][0] }}</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ future_tickets[i][1] }}</p>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Performance</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ past_bookings[i][1] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Date</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ past_bookings[i][2] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Seats</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ past_bookings[i][3] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Price Paid</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>£ {{ past_bookings[i][4] }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Date</p>
+                            <section style="height: 5px;"></section>
+                        {% endfor %}
+                    {% else %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p>You have not made any payments yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div id="bookMore-tab-display" class="d-none">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="outer-performances-display">
+                                <div class="performances-display">
+                                    <div class="performance-headers row">
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; border-bottom: 1px solid white;"><p style="text-align: center;">Event</p></div>
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; border-bottom: 1px solid white;"><p style="text-align: center;">Seats available</p></div>
+                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-bottom: 1px solid white;"><p style="text-align: center;">Date</p></div>
                                     </div>
                                 </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ future_tickets[i][2] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Seats</p>
-                                    </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ future_tickets[i][3] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 column">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Price Paid</p>
-                                    </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>£ {{ future_tickets[i][4] }}</p>
-                                    </div>
+                                <div id="performance-list-body"><!-- this is where the html code is dynamically inserted to generate the list of performances -->
                                 </div>
                             </div>
                         </div>
-                        <section style="height: 5px;"></section>
-                    {% endfor %}
-                {% else %}
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p>You have no bookings for future performances</p>
-                    </div>
-                {% endif %}
-            </div>
-            <div id="payments-tab-display" class="d-none">
-                {% if past_bookings != None and past_bookings|length != 0 %} 
-                    {% for i in range(past_bookings|length) %}
-                        <div id="past_booking{{ past_bookings[i] }}" class="row ticket">
-                            <div class="col-md-2 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>BookingID</p>
+                        <div id="seatingLayout" class="col-md-6">  
+                            <!--------------------------the key/legend region--------------------------------->
+                            <div class="seating-legend">
+                                
+                                <div class="row">
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/booked_chair.png" alt="booked seat" style="height: 25px; width: auto;">
+                                        <p>Booked</p>
                                     </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ past_bookings[i][0] }}</p>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/available_chair.png" alt="available seat" style="height: 25px; width: auto;">
+                                        <p>Available</p>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Performance</p>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/blocked_chair.png" alt="unavailable seat" style="height: 25px; width: auto;">
+                                        <p>Unavailable</p>
                                     </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ past_bookings[i][1] }}</p>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/selected_chair.png" alt="selected seat" style="height: 25px; width: auto;">
+                                        <p>Selected</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Date</p>
-                                    </div>
+                            <!--------------------------the seats region--------------------------------->
+                            <section style="height: 10px;"></section>
+                            <div id="seats" class="seating-floor">
+                                <section style="height: 10px;"></section>
+                                <div class="row">
+                                    <section style="width: 75px;"></section>
+                                    {% for k in range(20) %} <!-- top row of seats-->
+                                        <button id="seat10{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[10][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{chair[10][k]}}" style="height: 25px; width: auto;"></button>
+                                    {% endfor %}
+                                    <section style="width: 50px;"></section>
                                 </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ past_bookings[i][2] }}</p>
+                                {% for i in range(9) %} <!-- rest of the seats-->
+                                    <div class="row">
+                                                <section style="width: 25px;"></section>
+                                                {% for k in range(5) %}
+                                                    <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="{{ chair_class[9-i][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
+                                                <section style="width: 50px;"></section>
+                                                {% for k in range(10) %}
+                                                    <button id="seat{{ 9-i+5 }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="{{ chair_class[9-i][k+5] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+5]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
+                                                <section style="width: 50px;"></section>
+                                                {% for k in range(5) %}
+                                                    <button id="seat{{ 9-i+15 }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[9-i][k+15] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+15]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
                                     </div>
-                                </div>
+                                {% endfor %}
+                                <section style="height: 30px;"></section>
+                                <nav class="d-flex align-items-center justify-content-center"><div style="height: 30px; width: 360px; background-color: grey; border: 2px solid black;" class="d-flex align-items-center justify-content-center">Screen</div></nav>
                             </div>
-                            <div class="col-md-3 column" style="border-right: 1px dashed white">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Seats</p>
-                                    </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>{{ past_bookings[i][3] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 column">
-                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>Price Paid</p>
-                                    </div>
-                                </div>
-                                <div class="row-md-12 row">
-                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                        <p>£ {{ past_bookings[i][4] }}</p>
-                                    </div>
-                                </div>
+                            <!--------------------------the description region--------------------------------->
+                            <section style="height: 10px;"></section>
+                            <div class="d-flex align-items-center justify-content-center seating-description">
+                                <p id="performanceDescription">This is the about section for the event/performance being shown right now</p>
                             </div>
                         </div>
-                        <section style="height: 5px;"></section>
-                    {% endfor %}
-                {% else %}
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p>You have not made any payments yet</p>
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <p style="text-align: center; padding-left: 2rem;">This is the booking ticket display section</p>
+                            </div>
+                        </div>
+                        <section style="height: 2rem;"></section>
                     </div>
-                {% endif %}
-            </div>
-            <div id="bookMore-tab-display" class="d-none">
+                </div>
+                <div id="unapproved-tab-display" class="d-none">
                 
-            </div>
-            <div id="unapproved-tab-display" class="d-none">
-                
+                </div>
             </div>
         </div>
     </div>
@@ -211,6 +290,40 @@ document.getElementById("unapproved-tab-btn").addEventListener("change", () => {
     document.getElementById("bookMore-tab-display").classList.add("d-none")
     document.getElementById("unapproved-tab-display").classList.remove("d-none")
 })
+
+document.getElementById("bookMore-tab-btn").addEventListener("change", () => {
+    fetch("/performance-data")
+    .then (res => res.json())
+    .then(data => {
+       const body = document.getElementById("performance-list-body")
+       body.innerHTML = ""
+       if (data.length === 0) {
+            body.innerHTML = "<p>No performances are currently available </p>"
+       } else {
+            let html = ''
+            for (let i = 0; i < data['performances'].length; i++) {
+                html += `<div class="single-performance row" style="border: 1px solid white; margin-top: 1rem; margin-bottom: 1rem;" data-description="${data[data['performances'][i]][3]}">
+                            <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${data[data['performances'][i]][0]}</p></div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${data[data['performances'][i]][1]}</p></div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-center"><p style="text-align: center;">${data[data['performances'][i]][2]}</p></div>
+                        </div>`
+            }
+            body.innerHTML = html //adds the html string directly to the DOM in the element const body
+       }
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 

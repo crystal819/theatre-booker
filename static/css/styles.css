@@ -1,3 +1,8 @@
+:root {
+    --tab-widget-width: 50vw;
+    --active-tab: 0;
+}
+
 /* ----------------- global styling ---------------------*/
 h1, h2, h3, h4, label, p {
     color: white;
@@ -5,10 +10,34 @@ h1, h2, h3, h4, label, p {
 
 /* ----------------- seat selection ---------------------*/
 .seat {
-    background-color: rgb(154, 154, 154);
+    background-color: rgba(49, 49, 49, 0.659);
 }
 .seat:hover {
-    background-color: rgb(199, 189, 189);
+    background-color: rgb(113, 109, 109);
+}
+
+.seating-legend {
+    background-color: rgba(49, 49, 49, 0.659);
+    height: 40px;
+    width: 627px;  
+    border-radius: 10px; 
+    border: 1px solid rgb(94, 94, 94);
+}
+
+.seating-floor {
+    background-color: rgba(49, 49, 49, 0.659);
+    height: 370px;
+    width: 627px; 
+    border-radius: 10px; 
+    border: 1px solid rgb(94, 94, 94);
+}
+
+.seating-description {
+   height: 70px; 
+   width: 627px; 
+   background-color: rgba(49, 49, 49, 0.659);
+   border-radius: 10px; 
+   border: 1px solid rgb(94, 94, 94);
 }
 
 /* ----------------- date of birth features ---------------------*/
@@ -63,15 +92,34 @@ h1, h2, h3, h4, label, p {
 
 /*------------------ customer tab ui ------------------*/
 
-.tab-display {
-    max-height: 300px;
-    overflow-y: auto;
-    overflow-x: auto;
-    padding: 2rem;
+.tab-widget { /*whole tabular ui*/
+    width: var(--tab-widget-width);
+    transition: width 0.2s ease;
+    padding: 1rem;
+    margin: 2rem auto;
+    border-radius: 1rem;
+    background-color: rgba(49, 49, 49, 0.659);
+    box-shadow: 0 10px 20px 0 rgba(73, 73, 73, 0.17);
+}
+
+.outer-tab-display { /*tab content*/
     border-left: 1px solid rgb(121, 121, 121);
     border-right: 1px solid rgb(121, 121, 121);
     border-bottom: 1px solid rgb(121, 121, 121);
+    border-radius: 5px;
+}
+
+.tab-display { /*tab conent*/
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 2rem;
     scrollbar-width: none; 
+    mask-image: linear-gradient(
+        to bottom,
+        black 70%,
+        transparent 95%
+    );
 }
 
 .ticket {
@@ -81,18 +129,7 @@ h1, h2, h3, h4, label, p {
     margin-bottom: 8px;
 }
 
-.tab-widget {
-    width: 50vw;
-    padding: 1rem;
-    margin: 2rem auto;
-    border-radius: 1rem;
-    background-color: rgba(49, 49, 49, 0.659);
-    box-shadow: 0 10px 20px 0 rgba(73, 73, 73, 0.17);
-}
-
 .tab-menu {
-    --active: 0;
-
     position: relative;
     isolation: isolate;
     display: flex;
@@ -128,24 +165,32 @@ h1, h2, h3, h4, label, p {
     border-block-end: none;
     background-image: linear-gradient(rgb(120, 120, 120), rgb(49, 49, 49));
     z-index: -1;
-    translate: calc(var(--active) * 100%);
+    translate: calc(var(--active-tab) * 100%);
     transition: translate 0.5s ease-in-out;
 }
 
-.tab-menu:has(:checked:nth-of-type(1)) {
-    --active: 0;
+:root:has(#future-tickets-tab-btn:checked) {
+    --active-tab: 0;
+    --tab-widget-width: 50vw;
+    
 }
 
-.tab-menu:has(:checked:nth-of-type(2)) {
-    --active: 1;
+:root:has(#payments-tab-btn:checked) {
+    --active-tab: 1;
+    --tab-widget-width: 50vw;
 }
 
-.tab-menu:has(:checked:nth-of-type(3)) {
-    --active: 2;
+:root:has(#bookMore-tab-btn:checked) {
+    --active-tab: 2;
+    --tab-widget-width: 70vw;
 }
 
-.tab-menu:has(:checked:nth-of-type(4)) {
-    --active: 3;
+:root:has(#unapproved-tab-btn:checked) {
+    --active-tab: 3;
+    --tab-widget-width: 50vw;
 }
 
+.outer-performances-display {
+    background-color: red;
+}
 /*------------------------------------------------------------*/

@@ -5,8 +5,7 @@ app = Flask(__name__)
 db = PerformanceDB()
 app.secret_key = 'this_is_a_very_secret_key'
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+def gen_chair_imgs():
     chair=[0] #inserted a 0 to make the array 1-index based rather and 0-index based for ease of use with seat numbering
     for i in range(10):
         chair.append([])
@@ -17,6 +16,11 @@ def index():
         chair_class.append([])
         for _ in range(20):
             chair_class[i+1].append('available') #sets the chairs class
+    return chair, chair_class
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    chair, chair_class = gen_chair_imgs()
 
     return render_template('index.html', chair=chair, chair_class=chair_class)
 
@@ -66,7 +70,8 @@ def dashboard():
         customer_name = db.get_name(session['userName'])
         future_tickets = db.get_future_tickets(session['userName'])
         past_bookings = db.get_past_bookings(session['userName'])
-        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets, past_bookings=past_bookings)
+        chair, chair_class = gen_chair_imgs()
+        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets, past_bookings=past_bookings, chair=chair, chair_class=chair_class)
     elif session['userType'] == 'staff':
         return render_template("staff_dashboard.html")
     elif session['userType'] == 'admin':

@@ -17,7 +17,7 @@
     {% endif %}
 </div>
     
-<section style="height: 1rem;"></section>
+<section style="height: 0.2rem;"></section>
 
 <div class="d-flex justify-content-center align-items-center">
     <div class="column tab-widget">
@@ -177,17 +177,13 @@
                 </div>
                 <div id="bookMore-tab-display" class="d-none">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="outer-performances-display">
-                                <div class="performances-display">
-                                    <div class="performance-headers row">
-                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; border-bottom: 1px solid white;"><p style="text-align: center;">Event</p></div>
-                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; border-bottom: 1px solid white;"><p style="text-align: center;">Seats available</p></div>
-                                        <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-bottom: 1px solid white;"><p style="text-align: center;">Date</p></div>
-                                    </div>
-                                </div>
-                                <div id="performance-list-body"><!-- this is where the html code is dynamically inserted to generate the list of performances -->
-                                </div>
+                        <div class="col-md-3 performance-display-column">
+                            <div class="performance-headers row">
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; padding-top: 1rem; border-bottom: 1px solid white;"><p style="text-align: center;">Event</p></div>
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; padding-top: 1rem; border-bottom: 1px solid white; "><p style="text-align: center;">Seats available</p></div>
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-bottom: 1px solid white; padding-top: 1rem;"><p style="text-align: center;">Date</p></div>
+                            </div>
+                            <div id="performance-list-body"><!-- this is where the html code is dynamically inserted to generate the list of performances -->
                             </div>
                         </div>
                         <div id="seatingLayout" class="col-md-6">  
@@ -249,9 +245,21 @@
                                 <p id="performanceDescription">This is the about section for the event/performance being shown right now</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="d-flex justify-content-center align-items-center">
-                                <p style="text-align: center; padding-left: 2rem;">This is the booking ticket display section</p>
+                        <div class="col-md-3 order-display-column" style="padding-left: 3rem;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><h4 style="text-align: center; padding-left: 3rem;">Order:</h4></span>
+                                <span><img src="/static/img/shopping-cart.png" style="height: 50px; width: auto;"></span>
+                            </div>
+                            <div class="d-flex justify-content-center" style="flex-direction: column; height: 350px;">
+                                <p id="bookingPerformanceId">Performance: </p>
+                                <ul id="bookingPerformanceSeatsList" style="color: white; list-style-type: none;">
+                                </ul>
+                                <div style="margin-top: auto;">
+                                    <p id="bookingPrice">Price: £0</p>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <button id="confirmBooking" style="background-color: rgb(162, 248, 162);">Confirm booking?</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <section style="height: 2rem;"></section>
@@ -302,20 +310,56 @@ document.getElementById("bookMore-tab-btn").addEventListener("change", () => {
        } else {
             let html = ''
             for (let i = 0; i < data['performances'].length; i++) {
-                html += `<div class="single-performance row" style="border: 1px solid white; margin-top: 1rem; margin-bottom: 1rem;" data-description="${data[data['performances'][i]][3]}">
+                html += `<div class="single-performance row p-0" style="border: 1px solid white; margin-top: 1rem; margin-bottom: 1rem;" data-description="${data[data['performances'][i]][3]}" data-seatsBooked="${JSON.stringinfy({'seatsBooked': data['seatsBooked']})}" data-seatsBlocked="${JSON.stringify({'seatsBlocked': data['seatsBlocked']})}">
                             <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${data[data['performances'][i]][0]}</p></div>
                             <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${data[data['performances'][i]][1]}</p></div>
                             <div class="col-md-4 d-flex align-items-center justify-content-center"><p style="text-align: center;">${data[data['performances'][i]][2]}</p></div>
                         </div>`
             }
             body.innerHTML = html //adds the html string directly to the DOM in the element const body
+            document.getElementById("bookingPerformanceSeatsList").innerHTML = ''
        }
     })
 })
 
+//detects what seat (button or img) was clicked on only within the seatingLayout <div>
+document.getElementById("seatingLayout").addEventListener("click", (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        if (event.target.classList.contains('selected')) {
+            event.target.classList.remove('selected')
+            event.target.classList.add('available')
+            event.target.querySelector('img').src = 'static/img/available_chair.png'
+        } else if (event.target.classList.contains('available')) {
+            event.target.classList.remove('available')
+            event.target.classList.add('selected')
+            event.target.querySelector('img').src = 'static/img/selected_chair.png'
+        }
+    } else if (event.target.tagName === 'IMG') {
+        if (event.target.closest('button').classList.contains('selected')) {
+            event.target.closest('button').classList.remove('selected')
+            event.target.closest('button').classList.add('available')
+            event.target.src = 'static/img/available_chair.png'
+        } else if (event.target.closest('button').classList.contains('available')) {
+            event.target.closest('button').classList.remove('available')
+            event.target.closest('button').classList.add('selected')
+            event.target.src = 'static/img/selected_chair.png'
+        }
+    }
+})
 
-
-
+document.getElementById("performance-list-body").addEventListener("click", (event) => {
+    const seatsBooked = JSON.parse(event.target.closest('.single-performance').dataset.seatsBooked)['seatsBooked'] //extracts an array of all the booked seats for this performance since it was clicked on
+    const seatsBlocked = JSON.parse(event.target.closest('.single-performance').dataset.seatsBlocked)['seatsBlocked']
+    
+    for (let i = 0; i < seatsBooked.length; i++) {
+        document.getElementById(seatsBooked[i]).querySelector('img').src = '/static/img/booked_chair.png'
+        document.getElementById(seatsBooked[i]).disabled = true
+    }
+    for (let i = 0; i < seatsBlocked.length; i++) {
+        document.getElementById(seatsBlocked[i]).querySelector('img').src = '/static/img/blocked_chair.png'
+        document.getElementById(seatsBlocked[i]).disabled = true
+    }
+})
 
 
 

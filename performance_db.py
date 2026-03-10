@@ -55,6 +55,7 @@ class PerformanceDB:
                     if str(_current_performances[i][0]) not in all_data['performances']:
                         all_data['performances'].append(str(_current_performances[i][0])) #adds the performance to the performances list
                         all_data[str(_current_performances[i][0])] = [record[j][0], 199, record[j][2], record[j][3]] #stored event, seats available, date, description in that order
+                        #---------------------CARRY ON FROM HERE, SEARCH THROUGH ALL BOOKINGS OR SEATS TO STORE THE BOOKED AND BLOCKED SEATS---------------------------------------------------------------
                     else:
                         all_data[str(_current_performances[i][0])][1] -= 1 #removed a seat if the performance is already present
         return all_data

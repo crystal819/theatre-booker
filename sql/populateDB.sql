@@ -30,26 +30,37 @@ INSERT INTO booking (bookingID, userName, performanceID, approved, price, bookin
 (112, 'bob456', 4, 'carol789', 40, '2026-03-08');
 
 -- Seat
-INSERT INTO seat (seatPos, bookingID, performanceID) VALUES
-('A1', 101, 1),
-('A2', 101, 1),
-('B5', 102, 2),
-('B6', 102, 2),
-('C3', 103, 3),
-('C4', 103, 3),
-('D1', 104, 4),
-('D2', 104, 4);
+INSERT INTO seat (seatPos, bookingID, performanceID, occupied) VALUES
+('1a', 101, 1, 'booked'),
+('2a', 101, 1, 'booked'),
+('5b', 102, 2, 'booked'),
+('6b', 102, 2, 'booked'),
+('3c', 103, 3, 'booked'),
+('4c', 103, 3, 'booked'),
+('1d', 104, 4, 'booked'),
+('2d', 104, 4, 'booked');
 -- Additional Seats
-INSERT INTO seat (seatPos, bookingID, performanceID) VALUES
-('A3', 105, 2),
-('A4', 105, 2),
-('B7', 106, 1),
-('B8', 106, 1),
-('C5', 107, 4),
-('C6', 107, 4),
-('D3', 108, 3),
-('D4', 108, 3),
-('E1', 109, 1),
-('E2', 110, 2),
-('F1', 111, 3),
-('F2', 112, 4);
+INSERT INTO seat (seatPos, bookingID, performanceID, occupied) VALUES
+('3a', 105, 2, 'booked'),
+('4a', 105, 2, 'booked'),
+('7b', 106, 1, 'booked'),
+('8b', 106, 1, 'booked'),
+('5c', 107, 4, 'booked'),
+('6c', 107, 4, 'booked'),
+('3d', 108, 3, 'booked'),
+('4d', 108, 3, 'booked'),
+('1e', 109, 1, 'booked'),
+('2e', 110, 2, 'booked'),
+('1f', 111, 3, 'booked'),
+('2f', 112, 4, 'booked');
+
+-- Blocked Seats (no booking, unavailable for booking)
+INSERT INTO seat (seatPos, bookingID, performanceID, occupied) VALUES
+('10a', NULL, 1, 'blocked'),
+('10b', NULL, 1, 'blocked'),
+('10c', NULL, 2, 'blocked'),
+('10d', NULL, 2, 'blocked'),
+('10e', NULL, 3, 'blocked'),
+('10f', NULL, 3, 'blocked'),
+('10g', NULL, 4, 'blocked'),
+('10h', NULL, 4, 'blocked');

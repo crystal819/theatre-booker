@@ -24,14 +24,10 @@ def index():
 
     return render_template('index.html', chair=chair, chair_class=chair_class)
 
-
-
 @app.route('/performance-data', methods=['GET'])
 def get_seats_available_performances():
     performance_data = db.list_performances()
     return jsonify(performance_data)
-
-
 
 @app.route('/create-account', methods=['POST'])
 def create_account():
@@ -76,6 +72,26 @@ def dashboard():
         return render_template("staff_dashboard.html")
     elif session['userType'] == 'admin':
         return render_template("admin_dahsboard.html")
+
+@app.route('/calcPrice', methods=['GET', 'POST'])
+def calculatePrice():
+    data = request.get_json()
+
+    seats = []
+    for i in range(len(data['seatsBooked'])):
+        seat = ''
+        while data['seatsBooked'][i] != ',' or data['seatsBooked'][i] != ' ':
+            seat += data['seatsBooked'][i]
+        seats.append(seat)
+
+    if session['userType'] == 'normal':
+        price = len(seats) * 10
+
+    #------------------------------------carry on and do the pricing for all other user types--------------------
+
+
+
+
 
 
 if __name__ == '__main__':

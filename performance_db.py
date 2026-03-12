@@ -48,16 +48,21 @@ class PerformanceDB:
         }
         for i in range(len(_current_performances)):
             #gets all the data necessary for each active performance
-            sql2 = f"SELECT p.eventType, s.seatPos, p.performanceDate, p.description, s.performanceID FROM (SELECT seatPos, performanceID FROM seat WHERE performanceID = {_current_performances[i][0]}) s LEFT JOIN (SELECT eventType, performanceDate, description, performanceID FROM performance) p ON s.performanceID = p.performanceID ORDER BY s.performanceID ASC"
+            sql2 = f"SELECT p.eventType, s.seatPos, p.performanceDate, p.description, s.performanceID, s.occupied FROM (SELECT seatPos, performanceID, occupied FROM seat WHERE performanceID = {_current_performances[i][0]}) s LEFT JOIN (SELECT eventType, performanceDate, description, performanceID FROM performance) p ON s.performanceID = p.performanceID ORDER BY s.performanceID ASC"
             with self._get_connection() as conn:
                 record = conn.cursor().execute(sql2).fetchall()
                 for j in range(len(record)):
                     if str(_current_performances[i][0]) not in all_data['performances']:
                         all_data['performances'].append(str(_current_performances[i][0])) #adds the performance to the performances list
-                        all_data[str(_current_performances[i][0])] = [record[j][0], 199, record[j][2], record[j][3]] #stored event, seats available, date, description in that order
-                        #---------------------CARRY ON FROM HERE, SEARCH THROUGH ALL BOOKINGS OR SEATS TO STORE THE BOOKED AND BLOCKED SEATS---------------------------------------------------------------
+                        if record[j][5] == 'booked':
+                            all_data[str(_current_performances[i][0])] = [record[j][0], [record[j][1]], record[j][2], record[j][3], [], str(_current_performances[i][0])] #stored event, seatsBooked, date, description, seatsBlocked, performanceID in that order
+                        elif record[j][5] == 'blocked':
+                            all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [record[j][1]], str(_current_performances[i][0])]
                     else:
-                        all_data[str(_current_performances[i][0])][1] -= 1 #removed a seat if the performance is already present
+                        if record[j][5] == 'booked':
+                            all_data[str(_current_performances[i][0])][1].append(record[j][1]) #adds seatBooked to the array of the seatsBooked
+                        elif record[j][5] == 'blocked':
+                            all_data[str(_current_performances[i][0])][4].append(record[j][1]) #adds seatBlocked to the array of the seatsBlocked
         return all_data
     
     def create_account(self, data):

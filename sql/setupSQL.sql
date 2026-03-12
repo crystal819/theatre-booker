@@ -1,4 +1,27 @@
-create table users (userName varchar(20) primary key not null, passwordHash varchar(110) not null, firstName varchar(20) not null, lastName varchar(20), email varchar(30), DoB date not null, phone varchar(15), userType varchar(20) not null)
-create table performance (performanceID int primary key not null, performanceDate date, eventType varchar(20), performanceName varchar(20), description varchar(200))
-create table booking (bookingID int primary key not null, userName varchar(20), foreign key (userName) references users (userName), performanceID int, foreign key (performanceID) references performance (performanceID), approved varchar(20), foreign key (approved) references users (userName), price int, bookingDate date not null)
-create table seat (seatPos varchar(10) not null, bookingID int, foreign key (bookingID) references booking (bookingID), performanceID int not null, foreign key (performanceID) references performance (performanceID), PRIMARY KEY(seatPos, performanceID))
+create table users (userName varchar(20) primary key not null, 
+                    passwordHash varchar(110) not null, 
+                    firstName varchar(20) not null, 
+                    lastName varchar(20), 
+                    email varchar(30), 
+                    DoB date not null, 
+                    phone varchar(15), 
+                    userType varchar(20) not null)
+
+create table performance (performanceID int primary key not null, 
+                            performanceDate date, 
+                            eventType varchar(20), 
+                            performanceName varchar(20), 
+                            description varchar(200))
+
+create table booking (bookingID int primary key not null, 
+                        userName varchar(20), foreign key (userName) references users (userName), 
+                        performanceID int, foreign key (performanceID) references performance (performanceID), 
+                        approved varchar(20), foreign key (approved) references users (userName), 
+                        price int, 
+                        bookingDate date not null)
+                        
+create table seat (seatPos varchar(10) not null, 
+                    bookingID int, foreign key (bookingID) references booking (bookingID),
+                    performanceID int not null, foreign key (performanceID) references performance (performanceID), 
+                    PRIMARY KEY(seatPos, performanceID), 
+                    occupied varchar(20)) --occupied should be null if available, booked or blocked

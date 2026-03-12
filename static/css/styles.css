@@ -1,6 +1,7 @@
 :root {
     --tab-widget-width: 50vw;
     --active-tab: 0;
+    --tab-display-padding: 2rem;
 }
 
 /* ----------------- global styling ---------------------*/
@@ -19,8 +20,6 @@ h1, h2, h3, h4, label, p {
 
 .seat:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
-    background-color: #cccccc;
 }
 
 .seating-legend {
@@ -120,7 +119,10 @@ h1, h2, h3, h4, label, p {
     max-height: 540px;
     overflow-y: auto;
     overflow-x: auto;
-    padding: 2rem;
+    padding-top: var(--tab-display-padding);
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 8rem;
     scrollbar-width: none; 
     mask-image: linear-gradient(
         to bottom,
@@ -134,6 +136,7 @@ h1, h2, h3, h4, label, p {
     background-color: rgba(209, 209, 209, 0.2);
     padding: 5px;
     margin-bottom: 8px;
+    border-radius: 3px;
 }
 
 .tab-menu {
@@ -179,27 +182,48 @@ h1, h2, h3, h4, label, p {
 :root:has(#future-tickets-tab-btn:checked) {
     --active-tab: 0;
     --tab-widget-width: 50vw;
-    
+    --tab-display-padding: 0rem;
 }
 
 :root:has(#payments-tab-btn:checked) {
     --active-tab: 1;
     --tab-widget-width: 50vw;
+    --tab-display-padding: 0rem;
 }
 
 :root:has(#bookMore-tab-btn:checked) {
     --active-tab: 2;
     --tab-widget-width: 70vw;
+    --tab-display-padding: 2rem;
 }
 
 :root:has(#unapproved-tab-btn:checked) {
     --active-tab: 3;
     --tab-widget-width: 50vw;
+    --tab-display-padding: 2rem;
 }
 
 .performance-display-column {
     background-color: rgba(49, 49, 49, 0.753);
     border-radius: 0.4rem;
 }
+
+.single-performance {
+    border: 1px solid white;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 3px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.single-performance:hover {
+    background-color: rgba(67, 67, 67, 0.753);
+    box-shadow: 0px 4px 10px rgba(99, 95, 95, 0.2);
+}
+
+.single-performance.selected {
+    background-color: rgba(85, 85, 85, 0.753);
+}
+
 
 /*------------------------------------------------------------*/

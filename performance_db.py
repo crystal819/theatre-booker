@@ -24,13 +24,12 @@ class PerformanceDB:
         )
 
         try:
-            pyodbc.connect(conn_string_sch, timeout=3)
-            self.conn_string = conn_string_sch
+            self.conn = pyodbc.connect(conn_string_sch, timeout=3)
         except:
-            self.conn_string = conn_string_home
-        
-    def _get_connection(self):
-        return pyodbc.connect(self.conn_string)
+            try:
+                self.conn = pyodbc.connect(conn_string_home)
+            except:
+                print("ERROR")
 
     def convert_date_to_ISO(self, date): #converts dates from dd/mm/yyyy -> yyyy-mm-dd || human read-able to date standard iso 8601
         ISOstr = date[-4:] + '-' + date[3:5] + '-' + date[:2]
@@ -40,8 +39,7 @@ class PerformanceDB:
         today = date.today()
 
         sql1 = f"SELECT performanceID FROM performance WHERE performanceDate >= '{today}'" #gets all the performances that are running today or after
-        with self._get_connection() as conn:
-            _current_performances = conn.cursor().execute(sql1).fetchall()
+        _current_performances = self.conn.cursor().execute(sql1).fetchall()
 
         all_data = {
             'performances': []
@@ -49,26 +47,24 @@ class PerformanceDB:
         for i in range(len(_current_performances)):
             #gets all the data necessary for each active performance
             sql2 = f"SELECT p.eventType, s.seatPos, p.performanceDate, p.description, s.performanceID, s.occupied FROM (SELECT seatPos, performanceID, occupied FROM seat WHERE performanceID = {_current_performances[i][0]}) s LEFT JOIN (SELECT eventType, performanceDate, description, performanceID FROM performance) p ON s.performanceID = p.performanceID ORDER BY s.performanceID ASC"
-            with self._get_connection() as conn:
-                record = conn.cursor().execute(sql2).fetchall()
-                for j in range(len(record)):
-                    if str(_current_performances[i][0]) not in all_data['performances']:
-                        all_data['performances'].append(str(_current_performances[i][0])) #adds the performance to the performances list
-                        if record[j][5] == 'booked':
-                            all_data[str(_current_performances[i][0])] = [record[j][0], [record[j][1]], record[j][2], record[j][3], [], str(_current_performances[i][0])] #stored event, seatsBooked, date, description, seatsBlocked, performanceID in that order
-                        elif record[j][5] == 'blocked':
-                            all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [record[j][1]], str(_current_performances[i][0])]
-                    else:
-                        if record[j][5] == 'booked':
-                            all_data[str(_current_performances[i][0])][1].append(record[j][1]) #adds seatBooked to the array of the seatsBooked
-                        elif record[j][5] == 'blocked':
-                            all_data[str(_current_performances[i][0])][4].append(record[j][1]) #adds seatBlocked to the array of the seatsBlocked
+            record = self.conn.cursor().execute(sql2).fetchall()
+            for j in range(len(record)):
+                if str(_current_performances[i][0]) not in all_data['performances']:
+                    all_data['performances'].append(str(_current_performances[i][0])) #adds the performance to the performances list
+                    if record[j][5] == 'booked':
+                        all_data[str(_current_performances[i][0])] = [record[j][0], [record[j][1]], record[j][2], record[j][3], [], str(_current_performances[i][0])] #stored event, seatsBooked, date, description, seatsBlocked, performanceID in that order
+                    elif record[j][5] == 'blocked':
+                        all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [record[j][1]], str(_current_performances[i][0])]
+                else:
+                    if record[j][5] == 'booked':
+                        all_data[str(_current_performances[i][0])][1].append(record[j][1]) #adds seatBooked to the array of the seatsBooked
+                    elif record[j][5] == 'blocked':
+                        all_data[str(_current_performances[i][0])][4].append(record[j][1]) #adds seatBlocked to the array of the seatsBlocked
         return all_data
     
     def create_account(self, data):
 
-        with self._get_connection() as conn:
-            username_check = conn.cursor().execute(f"SELECT * FROM users WHERE userName = '{data['userName']}'").fetchall()
+        username_check = self.conn.cursor().execute(f"SELECT * FROM users WHERE userName = '{data['userName']}'").fetchall()
         if len(username_check) != 0:
             print("user already registered")
             return False
@@ -105,15 +101,13 @@ class PerformanceDB:
 
         sql = f"INSERT INTO users VALUES ('{data['userName']}', '{password_hash}', '{data['firstName']}', '{data['lastName']}', '{data['email']}', '{self.convert_date_to_ISO(data['dateOfBirth'])}', '{data['phoneNumber']}', '{data['userType']}')"
         print(sql)
-        with self._get_connection() as conn:
-            conn.cursor().execute(sql)
+        self.conn.cursor().execute(sql)
         
         return True
 
     def login(self, data):
-        with self._get_connection() as conn:
-            sql = f"SELECT userName, passwordHash, userType FROM users WHERE userName = '{data['userName']}'"
-            user = conn.cursor().execute(sql).fetchone()
+        sql = f"SELECT userName, passwordHash, userType FROM users WHERE userName = '{data['userName']}'"
+        user = self.conn.cursor().execute(sql).fetchone()
         if user == None: #checks the userName exists
             return False
         
@@ -130,8 +124,7 @@ class PerformanceDB:
     
     def get_name(self, userName):
         sql = f"SELECT firstName, lastName FROM users WHERE userName = '{userName}'"
-        with self._get_connection() as conn:
-            name = conn.cursor().execute(sql).fetchall()
+        name = self.conn.cursor().execute(sql).fetchall()
         if name[0][1] != None:
             return name[0][0] + ' ' + name[0][1] #returns first name and last name together if the user has entered a last name when creating their account
         return name[0]
@@ -140,22 +133,18 @@ class PerformanceDB:
         future_tickets = []
 
         sql1 = f"SELECT performanceID FROM performance WHERE performanceDate >= '{date.today()}'"
-        with self._get_connection() as conn:
-            performanceIDs = conn.cursor().execute(sql1).fetchall()
+        performanceIDs = self.conn.cursor().execute(sql1).fetchall()
 
         for i in range(len(performanceIDs)):
             sql2 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND performanceID = {performanceIDs[i][0]}"
-            with self._get_connection() as conn:
-                bookingIDs = conn.cursor().execute(sql2).fetchall()
+            bookingIDs = self.conn.cursor().execute(sql2).fetchall()
 
             for j in range(len(bookingIDs)):
                 sql3 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[j][0]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[j][0]})) p ON b.performanceID = p.performanceID"
-                with self._get_connection() as conn:
-                    booking = conn.cursor().execute(sql3).fetchall()
+                booking = self.conn.cursor().execute(sql3).fetchall()
 
                 sql4 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[j][0]}'"
-                with self._get_connection() as conn:
-                    seats = conn.cursor().execute(sql4).fetchall()
+                seats = self.conn.cursor().execute(sql4).fetchall()
 
                 seats_str = ''
                 for k in range(len(seats)):
@@ -168,17 +157,14 @@ class PerformanceDB:
         past_bookings = []
 
         sql1 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND approved != 'false'"
-        with self._get_connection() as conn:
-            bookingIDs = conn.cursor().execute(sql1).fetchall()
+        bookingIDs = self.conn.cursor().execute(sql1).fetchall()
         
         for i in range(len(bookingIDs)):
             sql2 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]})) p ON b.performanceID = p.performanceID"
-            with self._get_connection() as conn:
-                booking = conn.cursor().execute(sql2).fetchall()
+            booking = self.conn.cursor().execute(sql2).fetchall()
 
             sql3 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[i][0]}'"
-            with self._get_connection() as conn:
-                seats = conn.cursor().execute(sql3).fetchall()
+            seats = self.conn.cursor().execute(sql3).fetchall()
             seats_str = ''
             for j in range(len(seats)):
                 seats_str += seats[j][0] + ', '
@@ -189,8 +175,7 @@ class PerformanceDB:
     def book_seats(self, seats, performanceID, user_name, price):
         for i in range(len(seats)):
             sql = f"SELECT occupied FROM seat WHERE seatPos = '{seats[i]}' and performanceID = '{performanceID}'"
-            with self._get_connection() as conn:
-                result = conn.cursor().execute(sql).fetchone()
+            result = self.conn.cursor().execute(sql).fetchone()
             if result == 'booked' or result == 'blocked':
                 return {
                     'isSuccessful': False,
@@ -198,13 +183,11 @@ class PerformanceDB:
                  }
             
         booking_sql = f"INSERT INTO booking (userName, performanceID, approved, price, bookingDate) OUTPUT INSERTED.bookingID VALUES ('{user_name}', {performanceID}, Null, {price}, '{date.today()}')"
-        with self._get_connection() as conn: #inserts the boking which is unapproved and returns the autogenerated bookingID primary key value for this record
-            bookingID = conn.cursor().execute(booking_sql).fetchone()
+        bookingID = self.conn.cursor().execute(booking_sql).fetchone()
 
         for i in range(len(seats)):
             seat_sql = f"INSERT INTO seat (seatPos, bookingID, performanceID, occupied) VALUES ('{seats[i]}', {bookingID[0]}, {performanceID}, 'booked')"
-            with self._get_connection() as conn: #inserts seat into the database as booked even though the booking hasnt been approved - it will get deleted or updated once acted on by a staff/admin
-                conn.cursor().execute(seat_sql)
+            self.conn.cursor().execute(seat_sql)
 
         return {
             'isSuccessful': True,
@@ -215,17 +198,14 @@ class PerformanceDB:
         unapproved_bookings = []
 
         sql1 = f"SELECT bookingID FROM booking WHERE userName = '{userName}' AND approved IS NULL"
-        with self._get_connection() as conn:
-            bookingIDs = conn.cursor().execute(sql1).fetchall()
+        bookingIDs = self.conn.cursor().execute(sql1).fetchall()
         
         for i in range(len(bookingIDs)):
             sql2 = f"SELECT b.bookingID, p.performanceName, p.performanceDate, b.price FROM (SELECT bookingID, price, performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]}) b LEFT JOIN (SELECT performanceName, performanceDate, performanceID FROM performance WHERE performanceID = (SELECT performanceID FROM booking WHERE bookingID = {bookingIDs[i][0]})) p ON b.performanceID = p.performanceID"
-            with self._get_connection() as conn:
-                booking = conn.cursor().execute(sql2).fetchall()
+            booking = self.conn.cursor().execute(sql2).fetchall()
 
             sql3 = f"SELECT seatPos FROM seat WHERE bookingID = '{bookingIDs[i][0]}'"
-            with self._get_connection() as conn:
-                seats = conn.cursor().execute(sql3).fetchall()
+            seats = self.conn.cursor().execute(sql3).fetchall()
             seats_str = ''
             for j in range(len(seats)):
                 seats_str += seats[j][0] + ', '
@@ -237,14 +217,12 @@ class PerformanceDB:
     def get_unapproved_customer_bookings(self): #gets all unapproved bookings into a list: [bookingID, userName, performanceID, price, bookingDate, [seats_list] ]
 
         sql1 = "SELECT bookingID, userName, performanceID, price, bookingDate FROM Booking WHERE approved = NULL"
-        with self._get_connection() as conn:
-            bookings = conn.cursor().execute(sql1).fetchall()
+        bookings = self.conn.cursor().execute(sql1).fetchall()
 
         seats_list = []
         for i in range(len(bookings)):
             sql2 = f"SELECT SeatPos FROM seat WHERE BookingID = {bookings[i][0]}"
-            with self._get_connection() as conn:
-                seats = conn.cursor().execute(sql2).fetchall()
+            seats = self.conn.cursor().execute(sql2).fetchall()
             for j in range(len(seats)):
                 seats_list.append(seats[j][0])
             bookings[i].append(seats_list)
@@ -252,21 +230,18 @@ class PerformanceDB:
         return bookings
 
     def search_string(self, search_string): #ranking = userName, email, lastName, firstName
-        sql = f"SELECT * FROM users WHERE userName = '{search_string}'"
-        with self._get_connection() as conn:
-            user = conn.cursor().execute(sql).fetchone() #searches by userName
+        sql = f"SELECT * FROM users WHERE userName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+        user = self.conn.cursor().execute(sql).fetchone() #searches by userName
         if user is None:
-            sql = f"SELECT * FROM users WHERE email LIKE '{search_string}%'"
-            with self._get_connection() as conn:
-                user = conn.cursor().execute(sql).fetchone() #searches by email
+            if '@' in search_string:
+                sql = f"SELECT * FROM users WHERE email LIKE '{search_string}%' and (userType = 'normal' or userType = 'specialGuest')"
+                user = self.conn.cursor().execute(sql).fetchone() #searches by email
             if user is None:
-                sql = f"SELECT * FROM users WHERE lastName = '{search_string}'"
-                with self._get_connection() as conn:
-                    user = conn.cursor().execute(sql).fetchone() #searches by lastName
+                sql = f"SELECT * FROM users WHERE lastName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+                user = self.conn.cursor().execute(sql).fetchone() #searches by lastName
                 if user is None:
-                    sql = f"SELECT * FROM users WHERE firstName = '{search_string}'"
-                    with self._get_connection() as conn:
-                        user = conn.cursor().execute(sql).fetchone() #searches by firstName
+                    sql = f"SELECT * FROM users WHERE firstName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+                    user = self.conn.cursor().execute(sql).fetchone() #searches by firstName
                     if user is None:
                         return {'isSuccessful': False}
                     
@@ -279,10 +254,10 @@ class PerformanceDB:
                             'data': list(user)}
             else:
                 return {'isSuccessful': True,
-                        'match': 'lastName',
+                        'match': 'email',
                         'data': list(user)}
         else:
             return {'isSuccessful': True,
-                    'match': 'lastName',
+                    'match': 'userName',
                     'data': list(user)}
 

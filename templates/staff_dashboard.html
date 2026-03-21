@@ -28,15 +28,30 @@
 
 <div class="d-flex justify-content-center align-items-center">
     <div class="column tab-widget">
-        <div class="col-md-12 tab-selection-row tab-menu"> <!-- the top row where you can select the tabs -->
+        <div class="col-md-12 tab-menu"> <!-- the top row where you can select the tabs -->
             <input type="radio" id="search-customer-tab-btn" name="tabs" checked class="selected-tab"><label for="search-customer-tab-btn">Search Customer</label>
             <input type="radio" id="alter-performances-tab-btn" name="tabs"><label for="alter-performances-tab-btn">Alter Performances</label>
-            <input type="radio" id="unapproved-tab-btn" name="tabs"><label for="unapproved-tab-btn">Unapproved Bookings</label>
+            <input type="radio" id="unapproved-tab-staff-btn" name="tabs"><label for="unapproved-tab-staff-btn">Unapproved Bookings</label>
         </div>
         <div class="col-md-12 outer-tab-display">
             <div class="tab-display"> <!-- the actual content of the selected tab -->
                 <div id="search-customer-tab-display">
                     <div class="d-flex align-items-center justify-content-center" style="padding: 1rem;"><h4>Search Customer</h4></div> 
+                    <div class="user-search-found">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p id="userName-search">3</p>
+                                <p id="fName-search"></p>
+                                <p id="lName-search"></p>
+                                <p id="email-search"></p>
+                                <p id="phone-search"></p>
+                                <p id="DoB-search"></p>
+                                <p id="userType-search"></p>
+                            </div>
+                            <div id="user-search-bookings-div" class="col-md-8"></div>
+                        </div>
+                    </div>
+                    <div class="user-search-not-found d-none"></div>
                 </div>
                 <div id="alter-performances-tab-display" class="d-none">
                     <div class="row">
@@ -221,7 +236,7 @@ document.getElementById("alter-performances-tab-btn").addEventListener("change",
     document.getElementById("alter-performances-tab-display").classList.remove("d-none")
     document.getElementById("unapproved-tab-display").classList.add("d-none")
 })
-document.getElementById("unapproved-tab-btn").addEventListener("change", () => {
+document.getElementById("unapproved-tab-staff-btn").addEventListener("change", () => {
     document.getElementById("search-customer-tab-display").classList.add("d-none")
     document.getElementById("alter-performances-tab-display").classList.add("d-none")
     document.getElementById("unapproved-tab-display").classList.remove("d-none")
@@ -338,7 +353,83 @@ document.getElementById("searchCustomerBtn").addEventListener("click", () => {
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data)
+        if (data['isSuccessful'] === true) {
+            console.log('successful')
+            let html = ''
+            for (i = 0; i < data['tickets'].length; i++) {
+                html = `<div id="unapprovedBooking${ data['tickets'][i][0] }" class="row ticket" style="padding-bottom: 0.25rem">
+                                        <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                            <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>BookingID</p>
+                                                </div>
+                                            </div>
+                                            <div class="row-md-12 row">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>${ data['tickets'][i][0] }</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                            <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>Performance</p>
+                                                </div>
+                                            </div>
+                                            <div class="row-md-12 row">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>${ data['tickets'][i][1] }</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                            <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>Date</p>
+                                                </div>
+                                            </div>
+                                            <div class="row-md-12 row">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>${ data['tickets'][i][2] }</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                            <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>Seats</p>
+                                                </div>
+                                            </div>
+                                            <div class="row-md-12 row">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>${ data['tickets'][i][3] }</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 column">
+                                            <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>Price Paid</p>
+                                                </div>
+                                            </div>
+                                            <div class="row-md-12 row">
+                                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                    <p>£ ${ data['tickets'][i][5] }</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+            }
+            document.getElementById("user-search-bookings-div").innerHTML = html
+
+            document.getElementById("userName-search").textContent = 'UserName: ' + data['data'][0]
+            document.getElementById("fName-search").textContent = 'First Name: ' + data['data'][2]
+            document.getElementById("lName-search").textContent = 'Last Name: ' + data['data'][3]
+            document.getElementById("email-search").textContent = 'Email: ' + data['data'][4]
+            document.getElementById("phone-search").textContent = 'Phone Number: ' + data['data'][6]
+            document.getElementById("DoB-search").textContent = 'Date of Birth: ' + data['data'][5]
+            document.getElementById("userType-search").textContent = 'User Type: ' + data['data'][7]
+        }
     })
 })
 

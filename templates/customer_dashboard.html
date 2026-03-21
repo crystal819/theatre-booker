@@ -349,6 +349,8 @@
 </div>
 
 <script>
+document.documentElement.style.setProperty("--number-of-tabs", "4")
+
 document.getElementById("future-tickets-tab-btn").addEventListener("change", () => {
     document.getElementById("future-tickets-tab-display").classList.remove("d-none")
     document.getElementById("payments-tab-display").classList.add("d-none")

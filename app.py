@@ -148,10 +148,12 @@ def search_customer():
 
     data = request.get_json()
 
-    output = db.search_string(data['searchString'])
+    user_details = db.search_string(data['searchString'])
 
-    print(output)
-    return jsonify(output)
+    if user_details['isSuccessful'] == True:
+        user_details['tickets'] = db.get_past_bookings(user_details['data'][0])
+    print(user_details)
+    return jsonify(user_details)
 
 
 if __name__ == '__main__':

@@ -230,7 +230,7 @@ h1, h2, h3, h4, label, p {
 
 :root:has(#search-customer-tab-btn:checked) {
     --active-tab: 0;
-    --tab-widget-width: 50vw;
+    --tab-widget-width: 70vw;
     --tab-display-padding: 0rem;
 }
 
@@ -240,7 +240,7 @@ h1, h2, h3, h4, label, p {
     --tab-display-padding: 2rem;
 }
 
-:root:has(#unapproved-tab-btn:checked) {
+:root:has(#unapproved-tab-staff-btn:checked) {
     --active-tab: 2;
     --tab-widget-width: 50vw;
     --tab-display-padding: 2rem;

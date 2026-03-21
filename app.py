@@ -24,7 +24,7 @@ def index():
 
     return render_template('index.html', chair=chair, chair_class=chair_class)
 
-@app.route('/performance-data', methods=['GET'])
+@app.route('/performance-data')
 def get_seats_available_performances():
     performance_data = db.list_performances()
     return jsonify(performance_data)
@@ -62,14 +62,18 @@ def dashboard():
     if 'userType' not in session:
         return redirect("/")
     if session['userType'] == 'normal' or session['userType'] == 'specialGuest':
-        days_until_performance = 0
-        customer_name = db.get_name(session['userName'])
+        days_until_performance = 783465926747364968706689089573404508945023489
+        client_name = db.get_name(session['userName'])
         future_tickets = db.get_future_tickets(session['userName'])
         past_bookings = db.get_past_bookings(session['userName'])
+        unapproved_tickets = db.get_unapproved_bookings(session['userName'])
         chair, chair_class = gen_chair_imgs()
-        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, customer_name = customer_name, future_tickets=future_tickets, past_bookings=past_bookings, chair=chair, chair_class=chair_class)
+        return render_template("customer_dashboard.html", days_until_performance = days_until_performance, client_name = client_name, future_tickets=future_tickets, past_bookings=past_bookings, chair=chair, chair_class=chair_class, unapproved_tickets=unapproved_tickets)
     elif session['userType'] == 'staff':
-        return render_template("staff_dashboard.html")
+        unapproved_customer_tickets = db.get_unapproved_customer_bookings()
+        chair, chair_class = gen_chair_imgs()
+        client_name = db.get_name(session['userName'])
+        return render_template("staff_dashboard.html", client_name = client_name, chair=chair, chair_class=chair_class, unapproved_customer_tickets=unapproved_customer_tickets)
     elif session['userType'] == 'admin':
         return render_template("admin_dahsboard.html")
 
@@ -78,20 +82,76 @@ def calculatePrice():
     data = request.get_json()
 
     seats = []
+    seat = ''
     for i in range(len(data['seatsBooked'])):
-        seat = ''
-        while data['seatsBooked'][i] != ',' or data['seatsBooked'][i] != ' ':
+        if data['seatsBooked'][i] != ',' and data['seatsBooked'][i] != ' ':
             seat += data['seatsBooked'][i]
-        seats.append(seat)
+        else:
+            if seat != '':
+                seats.append(seat)
+            seat = ''
 
     if session['userType'] == 'normal':
         price = len(seats) * 10
+    if session['userType'] == 'specialGuest':
+        price = 0
+    if session['userType'] == 'staff':
+        price = len(seats) * 10
+    if session['userType'] == 'admin':
+        price = len(seats) * 10
+    
+    return jsonify({
+        'isSuccessful': 'true',
+        'price': str(price)
+    })
 
-    #------------------------------------carry on and do the pricing for all other user types--------------------
+@app.route('/bookSeats', methods=['GET', 'POST'])
+def book_seats():
+
+    data = request.get_json()
+
+    seats = []
+    seat = ''
+    for i in range(len(data['seatsBooked'])):
+        if data['seatsBooked'][i] != ',' and data['seatsBooked'][i] != ' ':
+            seat += data['seatsBooked'][i]
+        else:
+            if seat != '':
+                seats.append(seat)
+            seat = ''
 
 
+    if session['userType'] == 'normal':
+        price = len(seats) * 10
+    if session['userType'] == 'specialGuest':
+        price = 0
+    if session['userType'] == 'staff':
+        price = len(seats) * 10
+    if session['userType'] == 'admin':
+        price = len(seats) * 10
 
+    booking = db.book_seats(seats, data['performanceID'], session['userName'], price)
+    if booking == None:
+        return jsonify({})
+    if booking['isSuccessful'] == True:
+        return jsonify({
+            'isSuccessful': 'true'
+        })
+    if booking['isSuccessful'] == False:
+        return jsonify({
+            'isSuccessful': 'false',
+            'errorMsg': 'Seat'+booking['erroneousSeat']+'is invalid'
+        })
 
+@app.route('/search-customer', methods=['GET', 'POST'])
+def search_customer():
+
+    data = request.get_json()
+
+    output = db.search_string(data['searchString'])
+
+    print(output)
+    return jsonify(output)
 
 
 if __name__ == '__main__':

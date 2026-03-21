@@ -5,6 +5,7 @@ INSERT INTO users (userName, passwordHash, firstName, lastName, email, DoB, phon
 ('bob456', 'b047fc1e33f63381471f3d7297d60b4f23c217610866a5f6d0b542b1b900e069$5ca9293a15ea10c531e4d7a3a8133f52$1000', 'Bob', 'Smith', 'bob.smith@example.com', '1988-03-23', '07345678901', 'normal'), -- password: BobSecret789
 ('carol789', 'f48f7d77b88ce6e4e11de13dd930e112aebb8bbb1830df5c4a0f4c3f5dcb154b$ee75ecf75b9e78e607fa91f9309ae106$1000', 'Carol', 'White', 'carol.white@example.com', '2000-09-30', '07456789012', 'staff'); -- password: CarolPwd321
 
+set identity_insert performance on
 -- Performance
 INSERT INTO performance (performanceID, performanceDate, eventType, performanceName, description) VALUES
 (1, '2026-04-15', 'Theatre', 'Hamlet', 'A Shakespearean tragedy performance'),
@@ -12,6 +13,8 @@ INSERT INTO performance (performanceID, performanceDate, eventType, performanceN
 (3, '2026-05-05', 'Opera', 'La Traviata', 'A famous opera by Verdi'),
 (4, '2026-05-10', 'Comedy', 'Stand-Up Special', 'An evening of stand-up comedy with multiple comedians');
 
+set identity_insert performance off
+set identity_insert booking on --allows for manual insertion of values in the primary key column with identity
 -- Booking
 INSERT INTO booking (bookingID, userName, performanceID, approved, price, bookingDate) VALUES
 (101, 'alice123', 1, 'taras999', 50, '2026-03-01'),

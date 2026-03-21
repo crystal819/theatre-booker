@@ -7,13 +7,13 @@ create table users (userName varchar(20) primary key not null,
                     phone varchar(15), 
                     userType varchar(20) not null)
 
-create table performance (performanceID int primary key not null, 
+create table performance (performanceID int primary key not null IDENTITY(5,1), 
                             performanceDate date, 
                             eventType varchar(20), 
                             performanceName varchar(20), 
                             description varchar(200))
 
-create table booking (bookingID int primary key not null, 
+create table booking (bookingID int primary key not null IDENTITY(200,1), --auto increments the booking id from 200 to not interfere with the sample data generated
                         userName varchar(20), foreign key (userName) references users (userName), 
                         performanceID int, foreign key (performanceID) references performance (performanceID), 
                         approved varchar(20), foreign key (approved) references users (userName), 

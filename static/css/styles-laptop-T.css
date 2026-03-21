@@ -2,7 +2,6 @@
     --tab-widget-width: 50vw;
     --active-tab: 0;
     --tab-display-padding: 2rem;
-    --number-of-tabs: 4;
 }
 
 /* ----------------- global styling ---------------------*/
@@ -170,7 +169,7 @@ h1, h2, h3, h4, label, p {
     position: absolute;
     content: "";
     inset: 0 0 -1px;
-    width: calc((100% / var(--number-of-tabs)) - 2px);
+    width: calc((100% / 4) - 2px);
     border-radius: 0.5rem 0.5rem 0 0;
     border: 1px solid rgb(121, 121, 121);
     border-block-end: none;
@@ -226,26 +225,8 @@ h1, h2, h3, h4, label, p {
     background-color: rgba(85, 85, 85, 0.753);
 }
 
-/*-----------------------staff dashboard ui-----------------------*/
 
-:root:has(#search-customer-tab-btn:checked) {
-    --active-tab: 0;
-    --tab-widget-width: 50vw;
-    --tab-display-padding: 0rem;
-}
-
-:root:has(#alter-performances-tab-btn:checked) {
-    --active-tab: 1;
-    --tab-widget-width: 70vw;
-    --tab-display-padding: 2rem;
-}
-
-:root:has(#unapproved-tab-btn:checked) {
-    --active-tab: 2;
-    --tab-widget-width: 50vw;
-    --tab-display-padding: 2rem;
-}
-/*-----------------------booking confirmation overlay---------------------------*/
+/*------------------------------------------------------------*/
 
 .overlay {
     position: fixed;

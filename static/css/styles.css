@@ -263,6 +263,7 @@ h1, h2, h3, h4, label, p {
     background: rgba(50,50,50,0.95);
     padding: 2rem;
     border-radius: 1rem;
-    width: 400px;
+    width: 600px;
     max-width: 80vw;
+    justify-content: center;
 }

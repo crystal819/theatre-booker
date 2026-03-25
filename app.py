@@ -26,7 +26,7 @@ def index():
 
 @app.route('/performance-data')
 def get_seats_available_performances():
-    performance_data = db.list_performances()
+    performance_data = db.list_performances(session['userName'])
     return jsonify(performance_data)
 
 @app.route('/create-account', methods=['POST'])
@@ -152,8 +152,31 @@ def search_customer():
 
     if user_details['isSuccessful'] == True:
         user_details['tickets'] = db.get_past_bookings(user_details['data'][0])
-    print(user_details)
+
     return jsonify(user_details)
+
+@app.route('/block-seats', methods=['GET', 'POST'])
+def block_seats():
+
+    data = request.get_json()
+
+    seats = []
+    seat = ''
+    for i in range(len(data['restrictedSeats'])):
+        if data['restrictedSeats'][i] != ',' and data['restrictedSeats'][i] != ' ':
+            seat += data['restrictedSeats'][i]
+        else:
+            if seat != '':
+                seats.append(seat)
+            seat = ''
+
+    output = db.block_seats(data['performanceID'], seats)
+
+    return jsonify(output)
+
+
+
+
 
 
 if __name__ == '__main__':

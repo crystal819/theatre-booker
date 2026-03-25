@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<section style="height: 2rem;"></section>
+<div class="d-flex justify-content-center align-items-center">
+    <h1>Welcome back, {{ client_name }}</h1>
+</div>
+    
+<section style="height: 1rem;"></section>
+
+
+
+
+
+<section style="height: 2rem;"></section>
+
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="column tab-widget">
+        <div class="col-md-12 tab-menu"> <!-- the top row where you can select the tabs -->
+            <input type="radio" id="stats-overview-tab-btn" name="tabs" checked class="selected-tab"><label for="stats-overview-tab-btn">Stats Overview</label>
+            <input type="radio" id="alter-performances-tab-btn" name="tabs"><label for="alter-performances-tab-btn">Alter Performances</label>
+            <input type="radio" id="unapproved-tab-admin-btn" name="tabs"><label for="unapproved-tab-admin-btn">Unapproved Bookings</label>
+            <input type="radio" id="create-performance-tab-btn" name="tabs"><label for="create-performance-tab-btn">Create Performance</label>
+            <input type="radio" id="search-customer-tab-btn" name="tabs"><label for="search-customer-tab-btn">Search Customer</label>
+        </div>
+        <div class="col-md-12 outer-tab-display">
+            <div class="tab-display"> <!-- the actual content of the selected tab -->
+                <div id="stats-overview-tab-display">
+
+                </div>
+                <div id="search-customer-tab-display" class="d-none">
+                    <div class="d-flex align-items-center justify-content-center" style="padding-top: 1rem">
+                        <h4 style="padding-right: 1rem;">Search Customer</h4>
+                        <input id="tabSearchCustomerInput">
+                        <button id="tabSearchCustomerBtn"><img src="/static/img/search_img.png" style="width: 20px; height: auto;"></button>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div id="matchedByDiv" style="padding-bottom: 1rem;"></div>
+                    </div>
+                    <div class="user-search-found" style="flex: 1">
+                        <div class="row">
+                            <div  id="userDetailsSideBar" class="col-md-4 d-none">
+                                <h2 style="padding-bottom: 1rem;"><u>User Details</u></h2>
+                                <p id="userName-search" style="font-size: 20px;"></p>
+                                <p id="fName-search" style="font-size: 20px;"></p>
+                                <p id="lName-search" style="font-size: 20px;"></p>
+                                <p id="email-search" style="font-size: 20px;"></p>
+                                <p id="phone-search" style="font-size: 20px;"></p>
+                                <p id="DoB-search" style="font-size: 20px;"></p>
+                                <p id="userType-search" style="font-size: 20px;"></p>
+                            </div>
+                            <div id="user-search-bookings-div" class="col-md-8 d-flex align-items-center justify-content-center">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-search-not-found d-none"></div>
+                </div>
+                <div id="alter-performances-tab-display" class="d-none">
+                    <div class="row">
+                        <div class="col-md-3 performance-display-column">
+                            <div class="performance-headers row">
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; padding-top: 1rem; border-bottom: 1px solid white;"><p style="text-align: center;">Event</p></div>
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white; padding-top: 1rem; border-bottom: 1px solid white; "><p style="text-align: center;">Seats available</p></div>
+                                <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-bottom: 1px solid white; padding-top: 1rem;"><p style="text-align: center;">Date</p></div>
+                            </div>
+                            <div id="performance-list-body"><!-- this is where the html code is dynamically inserted to generate the list of performances -->
+                            </div>
+                        </div>
+                        <div id="seatingLayout" class="col-md-6">  
+                            <!--------------------------the key/legend region--------------------------------->
+                            <div class="seating-legend">
+                                
+                                <div class="row">
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/booked_chair.png" alt="booked seat" style="height: 25px; width: auto;">
+                                        <p>Booked</p>
+                                    </div>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/available_chair.png" alt="available seat" style="height: 25px; width: auto;">
+                                        <p>Available</p>
+                                    </div>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/blocked_chair.png" alt="unavailable seat" style="height: 25px; width: auto;">
+                                        <p>Unavailable</p>
+                                    </div>
+                                    <div class="col-md-3 p-0 d-flex justify-content-center align-items-center">
+                                        <img src="static/img/selected_chair.png" alt="selected seat" style="height: 25px; width: auto;">
+                                        <p>Selected</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--------------------------the seats region--------------------------------->
+                            <section style="height: 10px;"></section>
+                            <div id="seats" class="seating-floor">
+                                <section style="height: 10px;"></section>
+                                <div class="row">
+                                    <section style="width: 75px;"></section>
+                                    {% for k in range(20) %} <!-- top row of seats-->
+                                        <button id="seat10{{ ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[10][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{chair[10][k]}}" style="height: 25px; width: auto;"></button>
+                                    {% endfor %}
+                                    <section style="width: 50px;"></section>
+                                </div>
+                                {% for i in range(9) %} <!-- rest of the seats-->
+                                    <div class="row">
+                                                <section style="width: 25px;"></section>
+                                                {% for k in range(5) %}
+                                                    <button id="seat{{ 9-i }}{{ ['a', 'b', 'c', 'd', 'e'][k] }}" class="{{ chair_class[9-i][k] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
+                                                <section style="width: 50px;"></section>
+                                                {% for k in range(10) %}
+                                                    <button id="seat{{ 9-i }}{{ ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'][k] }}" class="{{ chair_class[9-i][k+5] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+5]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
+                                                <section style="width: 50px;"></section>
+                                                {% for k in range(5) %}
+                                                    <button id="seat{{ 9-i }}{{ ['p', 'q', 'r', 's', 't'][k] }}" class="{{ chair_class[9-i][k+15] }} p-0 seat" style="height: 30px; width: 25px; border: none;"><img src="{{ chair[9-i][k+15]}}" style="height: 25px; width: auto;"></button>
+                                                {% endfor %}
+                                    </div>
+                                {% endfor %}
+                                <section style="height: 30px;"></section>
+                                <nav class="d-flex align-items-center justify-content-center"><div style="height: 30px; width: 360px; background-color: grey; border: 2px solid black;" class="d-flex align-items-center justify-content-center">Screen</div></nav>
+                            </div>
+                            <!--------------------------the description region--------------------------------->
+                            <section style="height: 10px;"></section>
+                            <div class="d-flex align-items-center justify-content-center seating-description">
+                                <p id="performanceDescription">This is the about section for the event/performance being shown right now</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 order-display-column" style="padding-left: 3rem;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><h4 style="text-align: center; padding-left: 3rem;">Restrict seats:</h4></span>
+                            </div>
+                            <div class="d-flex justify-content-center" style="flex-direction: column; height: 350px;">
+                                <p id="bookingPerformanceID" data-id="1">Performance: </p>
+                                <p id="bookingPerformanceSeatsList"></p>
+                                <div style="margin-top: auto;">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <button id="confirmRestrictionBtn" style="background-color: rgb(162, 248, 162);">Confirm restriction?</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <section style="height: 2rem;"></section>
+                    </div>
+                </div>
+                <div id="unapproved-tab-display" class="d-none">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 1rem;"><h4>Unapproved Tickets</h4></div>
+                    {% if unapproved_customer_tickets != None and unapproved_customer_tickets|length != 0 %} 
+                        {% for i in range(unapproved_customer_tickets|length) %}
+                            <div id="unapprovedBooking{{ unapproved_customer_tickets[i] }}" class="row ticket" style="padding-bottom: 0.25rem">
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>BookingID</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ unapproved_customer_tickets[i][0] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Performance</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ unapproved_customer_tickets[i][1] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Date</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ unapproved_customer_tickets[i][2] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Seats</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>{{ unapproved_customer_tickets[i][3] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 column">
+                                    <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>Price Paid</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-md-12 row">
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <p>£ {{ unapproved_customer_tickets[i][4] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p>There are no unapproved customer tickets currently</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div id="create-performance-tab-display" class="d-none">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="blockSeatsOverlay" class="overlay d-none">
+    <div class="modal-box">
+        <h1 id="blockedSeatsOverlayTitle" style="padding-bottom: 3rem"></h1>
+        <h2 id="blockedSeatsOverlayText"></h2>
+        <div class="d-flex">
+            <p style="margin-left:auto">(Press anywhere to close)</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

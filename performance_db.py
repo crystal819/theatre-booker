@@ -29,13 +29,13 @@ class PerformanceDB:
             try:
                 self.conn = pyodbc.connect(conn_string_home)
             except:
-                print("ERROR")
+                print("ERROR CONNECTING TO THE DATABASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     def convert_date_to_ISO(self, date): #converts dates from dd/mm/yyyy -> yyyy-mm-dd || human read-able to date standard iso 8601
         ISOstr = date[-4:] + '-' + date[3:5] + '-' + date[:2]
         return ISOstr
 
-    def list_performances(self):
+    def list_performances(self, userName=None):
         today = date.today()
 
         sql1 = f"SELECT performanceID FROM performance WHERE performanceDate >= '{today}'" #gets all the performances that are running today or after
@@ -46,27 +46,39 @@ class PerformanceDB:
         }
         for i in range(len(_current_performances)):
             #gets all the data necessary for each active performance
-            sql2 = f"SELECT p.eventType, s.seatPos, p.performanceDate, p.description, s.performanceID, s.occupied FROM (SELECT seatPos, performanceID, occupied FROM seat WHERE performanceID = {_current_performances[i][0]}) s LEFT JOIN (SELECT eventType, performanceDate, description, performanceID FROM performance) p ON s.performanceID = p.performanceID ORDER BY s.performanceID ASC"
+            sql2 = f'''SELECT p.eventType, s.seatPos, p.performanceDate, p.description, s.performanceID, s.occupied, b.userName FROM 
+                    (SELECT seatPos, performanceID, occupied, bookingID FROM seat WHERE performanceID = {_current_performances[i][0]}) s 
+                    LEFT JOIN 
+                    (SELECT userName, bookingID FROM booking) b
+                    ON b.bookingID = s.bookingID
+                    LEFT JOIN
+                    (SELECT eventType,performanceDate, description, performanceID FROM performance) p 
+                    ON s.performanceID = p.performanceID 
+                    ORDER BY s.performanceID ASC'''
             record = self.conn.cursor().execute(sql2).fetchall()
             for j in range(len(record)):
                 if str(_current_performances[i][0]) not in all_data['performances']:
                     all_data['performances'].append(str(_current_performances[i][0])) #adds the performance to the performances list
                     if record[j][5] == 'booked':
-                        all_data[str(_current_performances[i][0])] = [record[j][0], [record[j][1]], record[j][2], record[j][3], [], str(_current_performances[i][0])] #stored event, seatsBooked, date, description, seatsBlocked, performanceID in that order
+                        if record[j][6] == userName:
+                            all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [], str(_current_performances[i][0]), [record[j][1]]] 
+                        else:
+                            all_data[str(_current_performances[i][0])] = [record[j][0], [record[j][1]], record[j][2], record[j][3], [], str(_current_performances[i][0]), []] #stored event, seatsBooked, date, description, seatsBlocked, performanceID, seatsBought in that order
                     elif record[j][5] == 'blocked':
-                        all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [record[j][1]], str(_current_performances[i][0])]
+                        all_data[str(_current_performances[i][0])] = [record[j][0], [], record[j][2], record[j][3], [record[j][1]], str(_current_performances[i][0]), []]
                 else:
                     if record[j][5] == 'booked':
                         all_data[str(_current_performances[i][0])][1].append(record[j][1]) #adds seatBooked to the array of the seatsBooked
                     elif record[j][5] == 'blocked':
                         all_data[str(_current_performances[i][0])][4].append(record[j][1]) #adds seatBlocked to the array of the seatsBlocked
+                    elif record[j][6] == userName:
+                        all_data[str(_current_performances[i][0])][6].append(record[j][1]) #adds seatBought to the array of seatsBought
         return all_data
     
     def create_account(self, data):
 
         username_check = self.conn.cursor().execute(f"SELECT * FROM users WHERE userName = '{data['userName']}'").fetchall()
         if len(username_check) != 0:
-            print("user already registered")
             return False
 
         DoB = date(int(self.convert_date_to_ISO(data['dateOfBirth'])[:4]), int(self.convert_date_to_ISO(data['dateOfBirth'])[5:7]), int(self.convert_date_to_ISO(data['dateOfBirth'])[8:10]))
@@ -78,7 +90,6 @@ class PerformanceDB:
         
         if len(data['phoneNumber']) < 10 and len(data['phoneNumber']) > 11:
             return False
-        print('2')
         try:
             temp = int(data['phoneNumber'])
         except ValueError:
@@ -100,7 +111,6 @@ class PerformanceDB:
         password_hash = hashed.hex()+'$'+salt.hex()+'$'+str(iterations)
 
         sql = f"INSERT INTO users VALUES ('{data['userName']}', '{password_hash}', '{data['firstName']}', '{data['lastName']}', '{data['email']}', '{self.convert_date_to_ISO(data['dateOfBirth'])}', '{data['phoneNumber']}', '{data['userType']}')"
-        print(sql)
         self.conn.cursor().execute(sql)
         
         return True
@@ -246,18 +256,37 @@ class PerformanceDB:
                         return {'isSuccessful': False}
                     
                     return {'isSuccessful': True,
-                            'match': 'firstName',
+                            'match': 'First Name',
                             'data': list(user)}
                 else:
                     return {'isSuccessful': True,
-                            'match': 'lastName',
+                            'match': 'Last Name',
                             'data': list(user)}
             else:
                 return {'isSuccessful': True,
-                        'match': 'email',
+                        'match': 'Email',
                         'data': list(user)}
         else:
             return {'isSuccessful': True,
-                    'match': 'userName',
+                    'match': 'User Name',
                     'data': list(user)}
+
+    def block_seats(self, performanceID, seats):
+        sql = ''
+        for i in range(len(seats)):
+            seat_registered_check = self.conn.cursor().execute(f"SELECT * FROM seat WHERE seatPos = '{seats[i]}' and performanceID = '{performanceID}'").fetchall()
+            if len(seat_registered_check) == 0:
+                sql += f"INSERT INTO seat (seatPos, bookingID, performanceID, occupied) VALUES ('{seats[i]}', NULL, '{performanceID}', 'blocked') "
+            else:
+                return {'isSuccessful': False,
+                        'reason': f'seat {seats[i]} is already blocked or booked'}
+        try:
+            self.conn.cursor().execute(sql)
+            return {'isSuccessful': True}
+        except:
+            return {'isSuccessful': False,
+                    'reason': ''}
+
+
+
 

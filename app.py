@@ -45,7 +45,6 @@ def login():
 
     data = request.get_json()
 
-    
     userType = db.login(data)
 
     if userType != False:
@@ -75,7 +74,10 @@ def dashboard():
         client_name = db.get_name(session['userName'])
         return render_template("staff_dashboard.html", client_name = client_name, chair=chair, chair_class=chair_class, unapproved_customer_tickets=unapproved_customer_tickets)
     elif session['userType'] == 'admin':
-        return render_template("admin_dahsboard.html")
+        unapproved_customer_tickets = db.get_unapproved_customer_bookings()
+        chair, chair_class = gen_chair_imgs()
+        client_name = db.get_name(session['userName'])
+        return render_template("admin_dashboard.html", client_name = client_name, chair=chair, chair_class=chair_class, unapproved_customer_tickets=unapproved_customer_tickets)
 
 @app.route('/calcPrice', methods=['GET', 'POST'])
 def calculatePrice():
@@ -148,7 +150,10 @@ def search_customer():
 
     data = request.get_json()
 
-    user_details = db.search_string(data['searchString'])
+    if session['userType'] == 'admin':
+        user_details = db.search_string(data['searchString'], admin=True)
+    else:
+        user_details = db.search_string(data['searchString'], admin=False)
 
     if user_details['isSuccessful'] == True:
         user_details['tickets'] = db.get_past_bookings(user_details['data'][0])

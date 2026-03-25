@@ -21,10 +21,10 @@
     <div class="column tab-widget">
         <div class="col-md-12 tab-menu"> <!-- the top row where you can select the tabs -->
             <input type="radio" id="stats-overview-tab-btn" name="tabs" checked class="selected-tab"><label for="stats-overview-tab-btn">Stats Overview</label>
-            <input type="radio" id="alter-performances-tab-btn" name="tabs"><label for="alter-performances-tab-btn">Alter Performances</label>
+            <input type="radio" id="alter-performances-admin-tab-btn" name="tabs"><label for="alter-performances-admin-tab-btn">Alter Performances</label>
             <input type="radio" id="unapproved-tab-admin-btn" name="tabs"><label for="unapproved-tab-admin-btn">Unapproved Bookings</label>
             <input type="radio" id="create-performance-tab-btn" name="tabs"><label for="create-performance-tab-btn">Create Performance</label>
-            <input type="radio" id="search-customer-tab-btn" name="tabs"><label for="search-customer-tab-btn">Search Customer</label>
+            <input type="radio" id="search-customer-admin-tab-btn" name="tabs"><label for="search-customer-admin-tab-btn">Search User</label>
         </div>
         <div class="col-md-12 outer-tab-display">
             <div class="tab-display"> <!-- the actual content of the selected tab -->
@@ -33,7 +33,7 @@
                 </div>
                 <div id="search-customer-tab-display" class="d-none">
                     <div class="d-flex align-items-center justify-content-center" style="padding-top: 1rem">
-                        <h4 style="padding-right: 1rem;">Search Customer</h4>
+                        <h4 style="padding-right: 1rem;">Search User</h4>
                         <input id="tabSearchCustomerInput">
                         <button id="tabSearchCustomerBtn"><img src="/static/img/search_img.png" style="width: 20px; height: auto;"></button>
                     </div>
@@ -42,15 +42,31 @@
                     </div>
                     <div class="user-search-found" style="flex: 1">
                         <div class="row">
-                            <div  id="userDetailsSideBar" class="col-md-4 d-none">
-                                <h2 style="padding-bottom: 1rem;"><u>User Details</u></h2>
-                                <p id="userName-search" style="font-size: 20px;"></p>
-                                <p id="fName-search" style="font-size: 20px;"></p>
-                                <p id="lName-search" style="font-size: 20px;"></p>
-                                <p id="email-search" style="font-size: 20px;"></p>
-                                <p id="phone-search" style="font-size: 20px;"></p>
-                                <p id="DoB-search" style="font-size: 20px;"></p>
-                                <p id="userType-search" style="font-size: 20px;"></p>
+                            <div id="userDetailsSideBar" class="col-md-4 d-none">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <h2 style="padding-bottom: 1rem;"><u>User Details</u></h2>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 p-0">
+                                        <p style="font-size: 20px;">UserName:</p>
+                                        <p style="font-size: 20px;">First Name:</p>
+                                        <p style="font-size: 20px;">Last Name:</p>
+                                        <p style="font-size: 20px;">Email:</p>
+                                        <p style="font-size: 20px;">Phone Number:</p>
+                                        <p style="font-size: 20px;">Date of Birth:</p>
+                                        <p style="font-size: 20px;">UserType:</p>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <p id="userName-search" style="font-size: 20px;"></p>
+                                        <p id="fName-search" style="font-size: 20px;"></p>
+                                        <p id="lName-search" style="font-size: 20px;"></p>
+                                        <p id="email-search" style="font-size: 20px;"></p>
+                                        <p id="phone-search" style="font-size: 20px;"></p>
+                                        <p id="DoB-search" style="font-size: 20px;"></p>
+                                        <p id="userType-search" style="font-size: 20px;"></p>
+                                    </div>
+                                </div>
+
                             </div>
                             <div id="user-search-bookings-div" class="col-md-8 d-flex align-items-center justify-content-center">
                             </div>
@@ -239,7 +255,304 @@
 
 
 
+<script>
+document.documentElement.style.setProperty("--number-of-tabs", "5")
 
+//displays the selected tab and hides the others
+document.getElementById("search-customer-admin-tab-btn").addEventListener("change", () => {
+    document.getElementById("search-customer-tab-display").classList.remove("d-none")
+    document.getElementById("alter-performances-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
+    document.getElementById("stats-overview-tab-display").classList.add("d-none")
+    document.getElementById("create-performance-tab-display").classList.add("d-none")
+})
+document.getElementById("alter-performances-admin-tab-btn").addEventListener("change", () => {
+    document.getElementById("search-customer-tab-display").classList.add("d-none")
+    document.getElementById("alter-performances-tab-display").classList.remove("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
+    document.getElementById("stats-overview-tab-display").classList.add("d-none")
+    document.getElementById("create-performance-tab-display").classList.add("d-none")
+})
+document.getElementById("unapproved-tab-admin-btn").addEventListener("change", () => {
+    document.getElementById("search-customer-tab-display").classList.add("d-none")
+    document.getElementById("alter-performances-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.remove("d-none")
+    document.getElementById("stats-overview-tab-display").classList.add("d-none")
+    document.getElementById("create-performance-tab-display").classList.add("d-none")
+})
+document.getElementById("stats-overview-tab-btn").addEventListener("change", () => {
+    document.getElementById("search-customer-tab-display").classList.add("d-none")
+    document.getElementById("alter-performances-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
+    document.getElementById("stats-overview-tab-display").classList.remove("d-none")
+    document.getElementById("create-performance-tab-display").classList.add("d-none")
+})
+document.getElementById("create-performance-tab-btn").addEventListener("change", () => {
+    document.getElementById("search-customer-tab-display").classList.add("d-none")
+    document.getElementById("alter-performances-tab-display").classList.add("d-none")
+    document.getElementById("unapproved-tab-display").classList.add("d-none")
+    document.getElementById("stats-overview-tab-display").classList.add("d-none")
+    document.getElementById("create-performance-tab-display").classList.remove("d-none")
+})
+
+
+document.getElementById("tabSearchCustomerBtn").addEventListener("click", () => {
+    fetch('/search-customer', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            'searchString': document.getElementById("tabSearchCustomerInput").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data['isSuccessful'] === true) {
+            document.getElementById("userDetailsSideBar").classList.remove("d-none")
+            document.getElementById("user-search-bookings-div").classList.remove("d-flex")
+            document.getElementById("user-search-bookings-div").classList.remove('align-items-center')
+            document.getElementById("user-search-bookings-div").classList.remove('justify-content-center')
+            document.getElementById("user-search-bookings-div").classList.remove('col-md-12')
+            document.getElementById("user-search-bookings-div").classList.add('col-md-8')
+            document.getElementById("matchedByDiv").innerHTML = `<p>(Matched by ${data['match']}) </p>`
+            let html = '<div class="d-flex align-items-center justify-content-center" style="padding-bottom: 1rem"><h2><u>Past Bookings</u></h2></div>'
+            if (data['tickets'].length === 0) {
+                html += "<div class='d-flex align-items-center justify-content-center'><p>This user has not made any bookings</p></div>"
+            } else {
+                for (i = 0; i < data['tickets'].length; i++) {
+                    html += `<div id="unapprovedBooking${ data['tickets'][i][0] }" class="row ticket" style="padding-bottom: 0.25rem">
+                                            <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white; padding-left: 5px;">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>BookingID</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row-md-12 row">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>${ data['tickets'][i][0] }</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>Performance</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row-md-12 row">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>${ data['tickets'][i][1] }</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 column" style="border-right: 1px dashed white">
+                                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>Date</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row-md-12 row">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>${ data['tickets'][i][2] }</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 column" style="border-right: 1px dashed white">
+                                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>Seats</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row-md-12 row">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>${ data['tickets'][i][3] }</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 column">
+                                                <div class="row-md-12 row" style="margin: 0 auto; border-bottom: 1px dashed white">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>Price Paid</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row-md-12 row">
+                                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                                        <p>£ ${ data['tickets'][i][4] }</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`
+                }
+            }
+            document.getElementById("user-search-bookings-div").innerHTML = html
+            
+
+            document.getElementById("userName-search").textContent = data['data'][0]
+            document.getElementById("fName-search").textContent = data['data'][2]
+            document.getElementById("lName-search").textContent = data['data'][3]
+            document.getElementById("email-search").textContent = data['data'][4]
+            document.getElementById("phone-search").textContent = data['data'][6]
+            document.getElementById("DoB-search").textContent = data['data'][5]
+            document.getElementById("userType-search").textContent = data['data'][7]
+        } else {
+            document.getElementById("matchedByDiv").innerHTML = ''
+            document.getElementById("user-search-bookings-div").innerHTML = '<div class="d-flex align-items-center justify-content-center"><h4>User Not Found</h4></div>'
+            document.getElementById("user-search-bookings-div").classList.add("d-flex")
+            document.getElementById("user-search-bookings-div").classList.add("align-items-center")
+            document.getElementById("user-search-bookings-div").classList.add("justify-content-center")
+            document.getElementById("user-search-bookings-div").classList.add('col-md-12')
+            document.getElementById("user-search-bookings-div").classList.remove('col-md-8')
+            document.getElementById("userName-search").textContent = ''
+            document.getElementById("fName-search").textContent = ''
+            document.getElementById("lName-search").textContent = ''
+            document.getElementById("email-search").textContent = ''
+            document.getElementById("phone-search").textContent = ''
+            document.getElementById("DoB-search").textContent = ''
+            document.getElementById("userType-search").textContent = ''
+            document.getElementById("userDetailsSideBar").classList.add("d-none")
+        }
+    })
+})
+
+document.getElementById("tabSearchCustomerInput").addEventListener("keydown", (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById("tabSearchCustomerBtn").dispatchEvent(new Event('click', {bubbles:true}))
+    }
+})
+
+document.getElementById("alter-performances-admin-tab-btn").addEventListener("change", () => {
+    fetch("/performance-data")
+    .then(res => res.json())
+    .then(data => {
+       const body = document.getElementById("performance-list-body")
+       body.innerHTML = ""
+       if (data.length === 0) {
+            body.innerHTML = "<p>No performances are currently available </p>"
+       } else {
+            let html = ''
+            for (let i = 0; i < data['performances'].length; i++) {
+                html += `<div id='single-performance-${String(i+1)}' class="single-performance row p-0" data-performanceid=${data[data['performances'][i]][5]} data-description="${data[data['performances'][i]][3]}" data-seatsbooked='${JSON.stringify({'seatsBooked': data[data['performances'][i]][1]})}' data-seatsblocked='${JSON.stringify({'seatsBlocked': data[data['performances'][i]][4]})}'>
+                            <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${data[data['performances'][i]][0]}</p></div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-center" style="border-right: 1px dashed white;"><p style="text-align: center;">${200-data[data['performances'][i]][1].length-data[data['performances'][i]][4].length}</p></div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-center"><p style="text-align: center;">${data[data['performances'][i]][2]}</p></div>
+                        </div>`
+            }
+            body.innerHTML = html //adds the html string directly to the DOM in the element const body
+            document.getElementById("bookingPerformanceSeatsList").innerHTML = ''
+
+            document.getElementById('single-performance-1').dispatchEvent(new Event('click', {bubbles:true})) //creates a synthetic event so that the first performance is loaded when opening the booking tab
+       }
+    })
+})
+
+//detects what seat (button or img) was clicked on only within the seatingLayout <div>
+document.getElementById("seatingLayout").addEventListener("click", (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        if (event.target.classList.contains('selected')) {
+            event.target.classList.remove('selected')
+            event.target.classList.add('available')
+            event.target.querySelector('img').src = 'static/img/available_chair.png'
+            let index = document.getElementById("bookingPerformanceSeatsList").textContent.indexOf(event.target.id.slice(4))
+            let seatsStr = document.getElementById("bookingPerformanceSeatsList").textContent.slice(0, index) + document.getElementById("bookingPerformanceSeatsList").textContent.slice(index+4)
+            document.getElementById("bookingPerformanceSeatsList").textContent = seatsStr
+            //-----------------------------------------------------------document.getElementById("bookingPerformanceSeatsList").textContent = 
+        } else if (event.target.classList.contains('available')) {
+            event.target.classList.remove('available')
+            event.target.classList.add('selected')
+            event.target.querySelector('img').src = 'static/img/selected_chair.png'
+            document.getElementById("bookingPerformanceSeatsList").textContent += event.target.id.slice(4) + ', ' //adds the seats id but without the 'seat' part of it and adds it to the seats selected shopping area
+        }
+    } else if (event.target.tagName === 'IMG') {
+        if (event.target.closest('button').classList.contains('selected')) {
+            event.target.closest('button').classList.remove('selected')
+            event.target.closest('button').classList.add('available')
+            event.target.src = 'static/img/available_chair.png'
+            let index = document.getElementById("bookingPerformanceSeatsList").textContent.indexOf(event.target.closest('button').id.slice(4))
+            let seatsStr = document.getElementById("bookingPerformanceSeatsList").textContent.slice(0, index) + document.getElementById("bookingPerformanceSeatsList").textContent.slice(index+4)
+            document.getElementById("bookingPerformanceSeatsList").textContent = seatsStr
+        } else if (event.target.closest('button').classList.contains('available')) {
+            event.target.closest('button').classList.remove('available')
+            event.target.closest('button').classList.add('selected')
+            event.target.src = 'static/img/selected_chair.png'
+            document.getElementById("bookingPerformanceSeatsList").textContent += event.target.closest('button').id.slice(4) + ', '
+        }
+    }
+})
+
+document.getElementById("performance-list-body").addEventListener("click", (event) => {
+    if (!event.target.closest('.single-performance')) return;
+    document.getElementById("bookingPerformanceID").textContent = `PerformanceID: ${event.target.closest('.single-performance').dataset.performanceid}`
+    document.getElementById("bookingPerformanceID").dataset.id = `${event.target.closest('.single-performance').dataset.performanceid}`
+    document.getElementById("bookingPerformanceSeatsList").textContent = ''
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 20; j++) {
+            //resets the booking selection chairs all to available before setting them to what they need to be for the performance selected
+            document.getElementById('seat' + String(i+1) + ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][j]).disabled = false
+            document.getElementById('seat' + String(i+1) + ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][j]).classList.remove('booked')
+            document.getElementById('seat' + String(i+1) + ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][j]).classList.remove('blocked')
+            document.getElementById('seat' + String(i+1) + ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][j]).classList.add('available')
+            document.getElementById('seat' + String(i+1) + ['a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o','p', 'q', 'r', 's', 't'][j]).querySelector('img').src = '/static/img/available_chair.png'
+        }
+    }
+    let nSinglePerformances = document.querySelectorAll('.single-performance').length
+    for (let i = 0; i < nSinglePerformances; i++) {
+        document.getElementById(`single-performance-${i+1}`).classList.remove('selected')
+    }
+    event.target.closest(".single-performance").classList.add('selected')
+    const seatsBooked = JSON.parse(event.target.closest('.single-performance').dataset.seatsbooked)['seatsBooked'] //extracts an array of all the booked seats for this performance since it was clicked on
+    const seatsBlocked = JSON.parse(event.target.closest('.single-performance').dataset.seatsblocked)['seatsBlocked']
+    
+    for (let i = 0; i < seatsBooked.length; i++) {
+        document.getElementById('seat'+String(seatsBooked[i])).querySelector('img').src = '/static/img/booked_chair.png'
+        document.getElementById('seat'+String(seatsBooked[i])).disabled = true
+        document.getElementById('seat'+String(seatsBooked[i])).classList.remove('available')
+        document.getElementById('seat'+String(seatsBooked[i])).classList.add('booked')
+    }
+    for (let i = 0; i < seatsBlocked.length; i++) {
+        document.getElementById('seat'+String(seatsBlocked[i])).querySelector('img').src = '/static/img/blocked_chair.png'
+        document.getElementById('seat'+String(seatsBlocked[i])).disabled = true
+        document.getElementById('seat'+String(seatsBlocked[i])).classList.remove('available')
+        document.getElementById('seat'+String(seatsBlocked[i])).classList.add('blocked')
+    }
+})
+
+
+document.getElementById("confirmRestrictionBtn").addEventListener("click", () => {
+    fetch("/block-seats", {
+        method:'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            'performanceID': document.getElementById("bookingPerformanceID").dataset.id,
+            'restrictedSeats': document.getElementById("bookingPerformanceSeatsList").textContent
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("alter-performances-admin-tab-btn").dispatchEvent(new Event("change", {bubbles:true}))
+        if (data['isSuccessful'] === true) {
+            document.getElementById("blockSeatsOverlay").classList.remove('d-none')
+            document.getElementById("blockedSeatsOverlayTitle").textContent = 'Seat restriction confirmed'
+            document.getElementById("blockedSeatsOverlayText").textContent = 'Blocked seats: ' + document.getElementById("bookingPerformanceSeatsList").textContent.slice(0, -2)
+        } else {
+            document.getElementById("blockedSeatsOverlayTitle").textContent = 'Seat restriction failed'
+            if (data['reason'] === '') {
+                document.getElementById("blockedSeatsOverlayText").textContent = 'Failed due to either the seat already being blocked or booked by another user'
+            } else {
+                document.getElementById("blockedSeatsOverlayText").textContent = 'Failed due to ' + data['reason']
+            }
+        }
+    })
+})
+
+document.getElementById("blockSeatsOverlay").addEventListener("click", (event) => {
+    if (event.target.id === "blockSeatsOverlay") {
+        event.currentTarget.classList.add("d-none");
+    }
+});
+
+
+
+
+</script>
 
 
 

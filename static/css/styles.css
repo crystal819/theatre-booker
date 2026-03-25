@@ -245,6 +245,37 @@ h1, h2, h3, h4, label, p {
     --tab-widget-width: 50vw;
     --tab-display-padding: 2rem;
 }
+/*-----------------------admin dashboard ui-----------------------*/
+
+:root:has(#stats-overview-tab-btn:checked) {
+    --active-tab: 0;
+    --tab-widget-width: 50vw;
+    --tab-display-padding: 2rem;
+}
+
+:root:has(#alter-performances-admin-tab-btn:checked) {
+    --active-tab: 1;
+    --tab-widget-width: 70vw;
+    --tab-display-padding: 2rem;
+}
+
+:root:has(#unapproved-tab-admin-btn:checked) {
+    --active-tab: 2;
+    --tab-widget-width: 50vw;
+    --tab-display-padding: 2rem;
+}
+
+:root:has(#create-performance-tab-btn:checked) {
+    --active-tab: 3;
+    --tab-widget-width: 70vw;
+    --tab-display-padding: 2rem;
+}
+
+:root:has(#search-customer-admin-tab-btn:checked) {
+    --active-tab: 4;
+    --tab-widget-width: 70vw;
+    --tab-display-padding: 0rem;
+}
 /*-----------------------booking confirmation overlay---------------------------*/
 
 .overlay {

@@ -239,18 +239,22 @@ class PerformanceDB:
 
         return bookings
 
-    def search_string(self, search_string): #ranking = userName, email, lastName, firstName
-        sql = f"SELECT * FROM users WHERE userName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+    def search_string(self, search_string, admin=False): #ranking = userName, email, lastName, firstName
+        if admin == False: #allows for admins to see all types of users but non admins can only see customers
+            usertype_selection = " and (userType = 'normal' or userType = 'specialGuest')"
+        else:
+            usertype_selection = ""
+        sql = f"SELECT * FROM users WHERE userName = '{search_string}'" + usertype_selection
         user = self.conn.cursor().execute(sql).fetchone() #searches by userName
         if user is None:
             if '@' in search_string:
-                sql = f"SELECT * FROM users WHERE email LIKE '{search_string}%' and (userType = 'normal' or userType = 'specialGuest')"
+                sql = f"SELECT * FROM users WHERE email LIKE '{search_string}%'" + usertype_selection
                 user = self.conn.cursor().execute(sql).fetchone() #searches by email
             if user is None:
-                sql = f"SELECT * FROM users WHERE lastName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+                sql = f"SELECT * FROM users WHERE lastName = '{search_string}'" + usertype_selection
                 user = self.conn.cursor().execute(sql).fetchone() #searches by lastName
                 if user is None:
-                    sql = f"SELECT * FROM users WHERE firstName = '{search_string}' and (userType = 'normal' or userType = 'specialGuest')"
+                    sql = f"SELECT * FROM users WHERE firstName = '{search_string}'" + usertype_selection
                     user = self.conn.cursor().execute(sql).fetchone() #searches by firstName
                     if user is None:
                         return {'isSuccessful': False}

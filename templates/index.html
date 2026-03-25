@@ -384,7 +384,11 @@ document.getElementById("loginToAccountBtn").addEventListener("click", () => {
     })
 })
 
-
+document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById("loginToAccountBtn").dispatchEvent(new Event('click', {bubbles:true}))
+    }
+})
 
 
 </script>
